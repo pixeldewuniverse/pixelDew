@@ -1,6 +1,6 @@
 # PixelDew Universe
 
-Landing page for PixelDew Universe built with Next.js App Router, TypeScript, and TailwindCSS.
+PixelDew Universe dashboard overview built with Next.js App Router, TypeScript, and TailwindCSS.
 
 ## Development
 
