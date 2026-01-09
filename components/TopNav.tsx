@@ -1,11 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getStore } from "@/lib/store";
 
 const newMenuItems = ["New Project", "New Prompt", "Upload Asset"];
 
 export default function TopNav({ onMenuToggle }: { onMenuToggle: () => void }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [credits, setCredits] = useState(0);
+
+  useEffect(() => {
+    const update = () => setCredits(getStore().credits);
+    update();
+    window.addEventListener("pixeldew-store", update);
+    return () => window.removeEventListener("pixeldew-store", update);
+  }, []);
 
   return (
     <nav className="flex flex-col gap-4 px-4 py-4 md:flex-row md:items-center md:justify-between md:px-10 md:py-5">
@@ -30,6 +39,9 @@ export default function TopNav({ onMenuToggle }: { onMenuToggle: () => void }) {
         </button>
       </div>
       <div className="flex flex-wrap items-center gap-3 md:flex-nowrap">
+        <div className="rounded-md border border-dew-mint/30 bg-space-800/70 px-3 py-2 text-[11px] font-arcade text-dew-mint md:text-xs">
+          Credits: <span className="text-white">{credits}</span>
+        </div>
         <div className="relative hidden md:block">
           <button
             className="rounded-md border border-dew-mint/40 px-3 py-2 text-xs font-arcade text-dew-mint transition hover:border-dew-mint hover:text-white"

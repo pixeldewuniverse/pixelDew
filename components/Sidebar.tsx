@@ -1,14 +1,10 @@
 "use client";
 
 const menuItems = [
-  "Overview",
-  "Projects",
-  "Content Calendar",
-  "Flow Planner",
-  "Prompt Library",
-  "Asset Vault",
-  "Automations",
-  "Settings"
+  { label: "Home", href: "/" },
+  { label: "Studio", href: "/studio" },
+  { label: "Projects", href: "/projects" },
+  { label: "Billing", href: "/billing" }
 ];
 
 export default function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
@@ -29,17 +25,14 @@ export default function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose:
         <div className="mb-6 text-[10px] font-arcade text-dew-mint/80">App Overview</div>
         <nav className="flex flex-col gap-2">
           {menuItems.map((item) => (
-            <button
-              key={item}
-              className={`flex items-center gap-2 rounded-md px-3 py-2 text-left transition hover:text-white ${
-                item === "Overview"
-                  ? "bg-space-900/70 text-white shadow-glow"
-                  : "text-white/70"
-              }`}
+            <a
+              key={item.label}
+              href={item.href}
+              className="flex items-center gap-2 rounded-md px-3 py-2 text-left text-white/70 transition hover:text-white"
             >
               <span className="text-dew-mint">▣</span>
-              {item}
-            </button>
+              {item.label}
+            </a>
           ))}
         </nav>
       </aside>

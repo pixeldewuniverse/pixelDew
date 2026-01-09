@@ -1,6 +1,6 @@
-# PixelDew Universe
+# PixelDew Build Studio
 
-PixelDew Universe dashboard overview built with Next.js App Router, TypeScript, and TailwindCSS.
+PixelDew Build Studio MVP built with Next.js App Router, TypeScript, and TailwindCSS.
 
 ## Development
 
