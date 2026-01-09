@@ -47,7 +47,7 @@ export default function CommandCenterPanel({ runId }: { runId: number }) {
         <div className="absolute inset-0 opacity-40">
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-dew-mint/10 to-transparent animate-shimmer" />
         </div>
-        <div className="relative flex flex-col gap-6 md:flex-row">
+        <div className="relative flex flex-col gap-6 md:flex-row md:items-start">
           <div className="flex h-16 w-16 items-end justify-center md:h-20 md:w-20">
             <svg viewBox="0 0 64 64" className="h-16 w-16" aria-hidden="true">
               <rect x="4" y="4" width="56" height="56" rx="6" fill="#12002B" stroke="#2CFF8F" strokeWidth="2" />
@@ -76,7 +76,7 @@ export default function CommandCenterPanel({ runId }: { runId: number }) {
               {logs.length === 0 ? "Awaiting next run..." : logs.map((log) => <div key={log}>{log}</div>)}
             </div>
           </div>
-          <div className="w-full max-w-xs space-y-4 text-xs text-white/70">
+          <div className="w-full max-w-xs space-y-4 text-xs text-white/70 md:max-w-[220px]">
             <div>
               <div className="text-[10px] uppercase tracking-widest text-dew-mint/70">Recent Runs</div>
               <ul className="mt-2 space-y-2">

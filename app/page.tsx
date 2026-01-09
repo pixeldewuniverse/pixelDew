@@ -44,12 +44,12 @@ export default function HomePage() {
           <span className="font-arcade text-neon-cyan">pixeldew.xyz</span>
           <p className="max-w-2xl">A pixel-born studio for big ideas.</p>
         </div>
-        <div className="mt-6 rounded-xl border border-dew-mint/30 bg-space-800/60 p-4 text-xs text-white/80 shadow-insetPixel">
+        <div className="mt-6 rounded-xl border border-dew-mint/30 bg-space-800/60 p-4 text-[11px] text-white/80 shadow-insetPixel md:text-xs">
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-            <div className="flex items-center gap-2 font-arcade text-dew-mint">
+            <div className="flex flex-wrap items-center gap-2 font-arcade text-dew-mint">
               <span className="text-white/60">Command</span>
               <span>&gt;</span>
-              <span className="text-white/80">generate weekly plan for PixelDew</span>
+              <span className="break-words text-white/80">generate weekly plan for PixelDew</span>
             </div>
             <button
               className="cta-button rounded-md bg-dew-mint px-4 py-2 text-xs font-arcade text-space-900 shadow-glow"

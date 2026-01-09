@@ -22,9 +22,9 @@ export default function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose:
         aria-hidden="true"
       />
       <aside
-        className={`z-30 h-full w-60 shrink-0 border-r border-dew-mint/20 bg-space-800/40 px-4 py-6 text-xs text-white/80 backdrop-blur md:static md:translate-x-0 ${
+        className={`z-30 h-full w-64 shrink-0 border-r border-dew-mint/20 bg-space-800/40 px-4 py-6 text-xs text-white/80 backdrop-blur md:static md:translate-x-0 md:w-56 ${
           isOpen ? "fixed left-0 top-0 translate-x-0" : "fixed left-0 top-0 -translate-x-full"
-        } transition-transform md:h-auto md:w-56`}
+        } transition-transform`}
       >
         <div className="mb-6 text-[10px] font-arcade text-dew-mint/80">App Overview</div>
         <nav className="flex flex-col gap-2">
