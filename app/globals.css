@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-press-start: "Press Start 2P";
+}
+
+body {
+  font-family: "Megapixel", ui-monospace, SFMono-Regular, monospace;
+  background: radial-gradient(circle at top, rgba(24, 230, 255, 0.08), transparent 45%),
+    linear-gradient(160deg, #12002b 0%, #160033 100%);
+  min-height: 100vh;
+}
+
+.pixel-border {
+  border: 1px dotted rgba(44, 255, 143, 0.6);
+  box-shadow: 0 0 18px rgba(24, 230, 255, 0.18), inset 0 0 28px rgba(24, 230, 255, 0.08);
+}
+
+.glow-text {
+  text-shadow: 0 0 10px rgba(44, 255, 143, 0.6), 0 0 30px rgba(24, 230, 255, 0.5);
+}
+
+.scanlines {
+  background-image: linear-gradient(
+    rgba(255, 255, 255, 0.03) 0%,
+    rgba(255, 255, 255, 0.03) 2%,
+    transparent 2%,
+    transparent 4%
+  );
+  background-size: 100% 4px;
+  animation: scan 12s linear infinite;
+  mix-blend-mode: soft-light;
+}
+
+.noise {
+  background-image: repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.03),
+      rgba(255, 255, 255, 0.03) 1px,
+      transparent 1px,
+      transparent 2px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.02),
+      rgba(255, 255, 255, 0.02) 1px,
+      transparent 1px,
+      transparent 2px
+    );
+  mix-blend-mode: overlay;
+  opacity: 0.35;
+}
+
+.cta-button {
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+.cta-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 18px rgba(44, 255, 143, 0.7);
+}
+
+.blink {
+  animation: blink 1.4s steps(2, start) infinite;
+}
+
+@keyframes blink {
+  to {
+    visibility: hidden;
+  }
+}
