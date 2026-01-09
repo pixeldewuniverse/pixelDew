@@ -23,3 +23,21 @@ vercel
 ```
 
 Alternatively, connect the repo on Vercel and use the default Next.js settings.
+
+## Environment Variables
+
+```bash
+NEXT_PUBLIC_LEMON_URL_STARTER=...
+NEXT_PUBLIC_LEMON_URL_BUILDER=...
+NEXT_PUBLIC_LEMON_URL_PRO=...
+NEXT_PUBLIC_LEMON_URL_STUDIO=...
+LEMONSQUEEZY_WEBHOOK_SECRET=...
+```
+
+## Webhooks
+
+Point LemonSqueezy webhooks to:
+
+```
+/api/webhooks/lemonsqueezy
+```

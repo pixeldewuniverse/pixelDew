@@ -19,30 +19,43 @@ export type Project = {
 };
 
 export type Store = {
+  userId: string;
+  email: string;
   credits: number;
   projects: Project[];
 };
 
 const STORE_KEY = "pixeldew-store";
 const INITIAL_STORE: Store = {
+  userId: "guest",
+  email: "demo@pixeldew.xyz",
   credits: 20,
   projects: []
 };
 
 const isBrowser = () => typeof window !== "undefined";
+const generateId = () => (isBrowser() && "randomUUID" in window.crypto ? window.crypto.randomUUID() : `pd-${Date.now()}`);
 
 export const getStore = (): Store => {
   if (!isBrowser()) return INITIAL_STORE;
   const raw = window.localStorage.getItem(STORE_KEY);
   if (!raw) {
-    window.localStorage.setItem(STORE_KEY, JSON.stringify(INITIAL_STORE));
-    return INITIAL_STORE;
+    const seeded = { ...INITIAL_STORE, userId: generateId() };
+    window.localStorage.setItem(STORE_KEY, JSON.stringify(seeded));
+    return seeded;
   }
   try {
-    return JSON.parse(raw) as Store;
+    const parsed = JSON.parse(raw) as Store;
+    if (!parsed.userId) {
+      const updated = { ...parsed, userId: generateId(), email: parsed.email || INITIAL_STORE.email };
+      window.localStorage.setItem(STORE_KEY, JSON.stringify(updated));
+      return updated;
+    }
+    return parsed;
   } catch {
-    window.localStorage.setItem(STORE_KEY, JSON.stringify(INITIAL_STORE));
-    return INITIAL_STORE;
+    const seeded = { ...INITIAL_STORE, userId: generateId() };
+    window.localStorage.setItem(STORE_KEY, JSON.stringify(seeded));
+    return seeded;
   }
 };
 
