@@ -1,4 +1,5 @@
-import NextAuth, { type NextAuthOptions } from "next-auth/next";
+import NextAuth from "next-auth/next";
+import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { mockUsers } from "@/lib/mockUsers";
 
