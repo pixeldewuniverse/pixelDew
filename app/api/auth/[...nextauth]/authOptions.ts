@@ -1,6 +1,14 @@
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { mockUsers } from "@/lib/mockUsers";
+
+const mockUsers = [
+  {
+    id: "1",
+    name: "Awan",
+    email: "awan@pixeldew.xyz",
+    password: "password123"
+  }
+];
 
 export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt" },
