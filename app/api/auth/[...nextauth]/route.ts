@@ -1,9 +1,8 @@
 import NextAuth from "next-auth";
-import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { mockUsers } from "@/lib/mockUsers";
 
-const authOptions: NextAuthOptions = {
+const authOptions = {
   session: { strategy: "jwt" },
   providers: [
     CredentialsProvider({
