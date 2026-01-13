@@ -1,6 +1,7 @@
 import AppShell from "@/components/AppShell";
 import Footer from "@/components/Footer";
 import PixelTitle from "@/components/PixelTitle";
+import DewbitCatch from "@/components/MiniGame/DewbitCatch";
 
 export default function HomePage() {
   return (
@@ -28,6 +29,20 @@ export default function HomePage() {
           >
             Buy Credits
           </a>
+        </div>
+        <div className="mt-10 grid gap-6 lg:grid-cols-[1.1fr,0.9fr]">
+          <DewbitCatch />
+          <div className="rounded-xl border border-dew-mint/30 bg-space-800/60 p-6 text-left text-xs text-white/70 shadow-insetPixel">
+            <div className="font-arcade text-white">Take a break. Catch the Dewbits.</div>
+            <p className="mt-3 text-white/60">
+              Use A/D or arrow keys to move the Dewbit catcher and keep your streak alive. Miss three drops and the
+              run resets.
+            </p>
+            <div className="mt-6 rounded-lg border border-neon-cyan/30 bg-space-900/60 p-4 text-[11px]">
+              <div className="text-neon-cyan">Tip</div>
+              <div className="mt-2 text-white/70">Short bursts increase the drop speed. Stay sharp.</div>
+            </div>
+          </div>
         </div>
       </div>
       <Footer />

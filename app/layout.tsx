@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Press_Start_2P } from "next/font/google";
 import "./globals.css";
+import Providers from "@/components/Providers";
 
 const pressStart = Press_Start_2P({
   weight: "400",
@@ -21,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={pressStart.variable}>
       <body className="bg-space-900 text-white antialiased font-body">
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

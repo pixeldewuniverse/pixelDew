@@ -13,6 +13,10 @@ body {
   min-height: 100vh;
 }
 
+canvas {
+  image-rendering: pixelated;
+}
+
 .vignette {
   background: radial-gradient(circle at center, transparent 40%, rgba(0, 0, 0, 0.45) 100%);
 }
