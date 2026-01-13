@@ -1,6 +1,6 @@
 export const mockUsers = [
   {
-    id: "user-awan",
+    id: "1",
     name: "Awan",
     email: "awan@pixeldew.xyz",
     password: "password123"
