@@ -5,7 +5,6 @@ const bits = [
   { id: "X", top: "32%", left: "84%", color: "text-neon-magenta" },
   { id: "M", top: "56%", left: "10%", color: "text-dew-green" },
   { id: "N", top: "64%", left: "78%", color: "text-neon-cyan" },
-  { id: "Y", top: "22%", left: "30%", color: "text-neon-blue" },
   { id: "Z", top: "72%", left: "32%", color: "text-neon-blue" },
   { id: "Q", top: "10%", left: "42%", color: "text-neon-magenta" }
 ];
