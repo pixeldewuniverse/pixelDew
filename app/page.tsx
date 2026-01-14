@@ -5,7 +5,7 @@ import AppShell from "@/components/AppShell";
 import CommandCenterPanel from "@/components/CommandCenterPanel";
 import Footer from "@/components/Footer";
 import PixelTitle from "@/components/PixelTitle";
-import { addToCart } from "@/lib/cart";
+import { useCart } from "@/lib/cartContext";
 import { products } from "@/lib/products";
 
 const filters = ["All", "Templates", "Planner", "Prompts", "UI Kit"] as const;
@@ -74,6 +74,7 @@ const faqs = [
 
 export default function HomePage() {
   const [activeFilter, setActiveFilter] = useState<(typeof filters)[number]>("All");
+  const { addItem } = useCart();
 
   const filteredProducts = useMemo(() => {
     if (activeFilter === "All") return products.filter((product) => product.category !== "Bundle");
@@ -151,12 +152,12 @@ export default function HomePage() {
                   <button
                     className="rounded-md border border-dew-mint/40 px-3 py-2 text-[11px] text-dew-mint"
                     onClick={() =>
-                      addToCart({
-                        variantUniqueId: product.scalevVariantUniqueId,
+                      addItem({
+                        id: product.id,
                         name: product.name,
                         price: product.price,
                         quantity: 1,
-                        checkoutUrl: product.scalevCheckoutUrl
+                        scalevVariantUniqueId: product.scalevVariantUniqueId
                       })
                     }
                   >

@@ -14,6 +14,16 @@ export async function POST(request: Request) {
     items: { variant_unique_id: string; quantity: number }[];
   } = body;
 
+  if (
+    !customer_name?.trim() ||
+    !customer_phone?.trim() ||
+    !customer_email?.trim() ||
+    !Array.isArray(items) ||
+    items.length === 0
+  ) {
+    return NextResponse.json({ ok: false, message: "Missing required checkout data." }, { status: 400 });
+  }
+
   const apiBase = process.env.SCALEV_API_BASE;
   const apiKey = process.env.SCALEV_API_KEY;
   const storeUniqueId = process.env.SCALEV_STORE_UNIQUE_ID;

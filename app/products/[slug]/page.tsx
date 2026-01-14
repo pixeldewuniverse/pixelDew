@@ -1,12 +1,13 @@
 import AppShell from "@/components/AppShell";
 import Footer from "@/components/Footer";
-import { addToCart } from "@/lib/cart";
+import { useCart } from "@/lib/cartContext";
 import { products } from "@/lib/products";
 
 type PageProps = { params: { slug: string } };
 
 export default function ProductDetailPage({ params }: PageProps) {
   const product = products.find((item) => item.slug === params.slug);
+  const { addItem } = useCart();
 
   if (!product) {
     return (
@@ -50,12 +51,12 @@ export default function ProductDetailPage({ params }: PageProps) {
               <button
                 className="mt-3 w-full rounded-md border border-dew-mint/40 px-4 py-2 text-[11px] text-dew-mint"
                 onClick={() =>
-                  addToCart({
-                    variantUniqueId: product.scalevVariantUniqueId,
+                  addItem({
+                    id: product.id,
                     name: product.name,
                     price: product.price,
                     quantity: 1,
-                    checkoutUrl: product.scalevCheckoutUrl
+                    scalevVariantUniqueId: product.scalevVariantUniqueId
                   })
                 }
               >

@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import AppShell from "@/components/AppShell";
 import Footer from "@/components/Footer";
-import { addToCart } from "@/lib/cart";
+import { useCart } from "@/lib/cartContext";
 import { products } from "@/lib/products";
 
 const categories = ["All", "Templates", "Planner", "Prompts", "UI Kit", "Bundle"] as const;
@@ -13,6 +13,7 @@ export default function ProductsPage() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState<(typeof categories)[number]>("All");
   const [sort, setSort] = useState<(typeof sorts)[number]>("Popular");
+  const { addItem } = useCart();
 
   const filtered = useMemo(() => {
     let result = products;
@@ -104,12 +105,12 @@ export default function ProductsPage() {
                 <button
                   className="rounded-md border border-dew-mint/40 px-3 py-2 text-[11px] text-dew-mint"
                   onClick={() =>
-                    addToCart({
-                      variantUniqueId: product.scalevVariantUniqueId,
+                    addItem({
+                      id: product.id,
                       name: product.name,
                       price: product.price,
                       quantity: 1,
-                      checkoutUrl: product.scalevCheckoutUrl
+                      scalevVariantUniqueId: product.scalevVariantUniqueId
                     })
                   }
                 >
