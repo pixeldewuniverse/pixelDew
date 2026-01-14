@@ -1,40 +1,27 @@
-export type OrderStatus = "created" | "paid" | "cancelled" | "refunded" | "unknown";
+export type OrderStatus = "created" | "paid" | "failed" | "refunded" | "unknown";
 
 export type MockOrder = {
-  id: string;
-  event: string;
+  secretSlug: string;
   status: OrderStatus;
-  payload: Record<string, unknown>;
-  createdAt: string;
+  customer?: Record<string, unknown>;
+  items?: Array<Record<string, unknown>>;
   updatedAt: string;
 };
 
-const orders: MockOrder[] = [];
+const orders = new Map<string, MockOrder>();
 
-export const recordOrderEvent = (event: string, payload: Record<string, unknown>) => {
-  const id = (payload?.data as { id?: string })?.id ?? `order-${Date.now()}`;
-  const status = (payload?.data as { status?: string })?.status ?? "unknown";
-  const existing = orders.find((order) => order.id === id);
+export const recordOrderEvent = (secretSlug: string, payload: Record<string, unknown>, status: OrderStatus) => {
+  const existing = orders.get(secretSlug);
   const now = new Date().toISOString();
-
-  if (existing) {
-    existing.status = status as OrderStatus;
-    existing.payload = payload;
-    existing.event = event;
-    existing.updatedAt = now;
-    return existing;
-  }
-
   const order: MockOrder = {
-    id,
-    event,
-    status: status as OrderStatus,
-    payload,
-    createdAt: now,
+    secretSlug,
+    status,
+    customer: (payload?.customer as Record<string, unknown>) ?? existing?.customer,
+    items: (payload?.items as Array<Record<string, unknown>>) ?? existing?.items,
     updatedAt: now
   };
-  orders.unshift(order);
+  orders.set(secretSlug, order);
   return order;
 };
 
-export const listOrders = () => orders;
+export const listOrders = () => Array.from(orders.values());

@@ -5,6 +5,7 @@ import AppShell from "@/components/AppShell";
 import CommandCenterPanel from "@/components/CommandCenterPanel";
 import Footer from "@/components/Footer";
 import PixelTitle from "@/components/PixelTitle";
+import { addToCart } from "@/lib/cart";
 import { products } from "@/lib/products";
 
 const filters = ["All", "Templates", "Planner", "Prompts", "UI Kit"] as const;
@@ -147,6 +148,20 @@ export default function HomePage() {
                   >
                     Buy now
                   </a>
+                  <button
+                    className="rounded-md border border-dew-mint/40 px-3 py-2 text-[11px] text-dew-mint"
+                    onClick={() =>
+                      addToCart({
+                        variantUniqueId: product.scalevVariantUniqueId,
+                        name: product.name,
+                        price: product.price,
+                        quantity: 1,
+                        checkoutUrl: product.scalevCheckoutUrl
+                      })
+                    }
+                  >
+                    Add to cart
+                  </button>
                 </div>
               </div>
             ))}

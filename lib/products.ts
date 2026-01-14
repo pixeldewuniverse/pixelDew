@@ -9,6 +9,7 @@ export type Product = {
   description: string;
   badges: string[];
   features: string[];
+  scalevVariantUniqueId: string;
   scalevCheckoutUrl: string;
 };
 
@@ -24,6 +25,7 @@ export const products: Product[] = [
     description: "A 12-week pixel planner with channel strategy, drops, and tracking sheets.",
     badges: ["Best Seller"],
     features: ["12-week calendar", "Channel strategy", "Metric tracker"],
+    scalevVariantUniqueId: "variant_calendar",
     scalevCheckoutUrl: getCheckoutUrl("NEXT_PUBLIC_SCALEV_CHECKOUT_STARTER")
   },
   {
@@ -35,6 +37,7 @@ export const products: Product[] = [
     description: "Visualize launches, tasks, and approvals with a neon-friendly flow canvas.",
     badges: ["New"],
     features: ["Flow canvas", "Approval lanes", "Weekly sprints"],
+    scalevVariantUniqueId: "variant_flow",
     scalevCheckoutUrl: getCheckoutUrl("NEXT_PUBLIC_SCALEV_CHECKOUT_BUILDER")
   },
   {
@@ -46,6 +49,7 @@ export const products: Product[] = [
     description: "50 high-converting prompts for ads, hooks, and conversion copy.",
     badges: [],
     features: ["50 prompts", "Ad hooks", "Conversion copy"],
+    scalevVariantUniqueId: "variant_prompts",
     scalevCheckoutUrl: getCheckoutUrl("NEXT_PUBLIC_SCALEV_CHECKOUT_STARTER")
   },
   {
@@ -57,6 +61,7 @@ export const products: Product[] = [
     description: "Neon mint UI components, grids, and buttons for PixelDew-ready layouts.",
     badges: ["Best Seller"],
     features: ["120+ components", "Dark UI", "Figma ready"],
+    scalevVariantUniqueId: "variant_ui",
     scalevCheckoutUrl: getCheckoutUrl("NEXT_PUBLIC_SCALEV_CHECKOUT_PRO")
   },
   {
@@ -68,6 +73,7 @@ export const products: Product[] = [
     description: "Hero-first landing page template with pixel glow sections and CTA blocks.",
     badges: ["New"],
     features: ["Hero + CTA blocks", "Responsive layout", "Editable components"],
+    scalevVariantUniqueId: "variant_landing",
     scalevCheckoutUrl: getCheckoutUrl("NEXT_PUBLIC_SCALEV_CHECKOUT_BUILDER")
   },
   {
@@ -79,6 +85,7 @@ export const products: Product[] = [
     description: "Multi-section web design pack with layouts, grids, and pixel accents.",
     badges: [],
     features: ["Homepage + sections", "Component library", "Style guide"],
+    scalevVariantUniqueId: "variant_webdesign",
     scalevCheckoutUrl: getCheckoutUrl("NEXT_PUBLIC_SCALEV_CHECKOUT_PRO")
   },
   {
@@ -90,6 +97,7 @@ export const products: Product[] = [
     description: "Everything you need to ship: calendar, prompt pack, and UI kit.",
     badges: ["Bundle"],
     features: ["Calendar + prompts + UI kit", "Commercial license", "Updates included"],
+    scalevVariantUniqueId: "variant_creator_bundle",
     scalevCheckoutUrl: getCheckoutUrl("NEXT_PUBLIC_SCALEV_CHECKOUT_STUDIO")
   }
 ];

@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import AppShell from "@/components/AppShell";
 import Footer from "@/components/Footer";
+import { addToCart } from "@/lib/cart";
 import { products } from "@/lib/products";
 
 const categories = ["All", "Templates", "Planner", "Prompts", "UI Kit", "Bundle"] as const;
@@ -100,6 +101,20 @@ export default function ProductsPage() {
                 >
                   Buy now
                 </a>
+                <button
+                  className="rounded-md border border-dew-mint/40 px-3 py-2 text-[11px] text-dew-mint"
+                  onClick={() =>
+                    addToCart({
+                      variantUniqueId: product.scalevVariantUniqueId,
+                      name: product.name,
+                      price: product.price,
+                      quantity: 1,
+                      checkoutUrl: product.scalevCheckoutUrl
+                    })
+                  }
+                >
+                  Add to cart
+                </button>
               </div>
             </div>
           ))}

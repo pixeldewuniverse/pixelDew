@@ -1,5 +1,6 @@
 import AppShell from "@/components/AppShell";
 import Footer from "@/components/Footer";
+import { addToCart } from "@/lib/cart";
 import { products } from "@/lib/products";
 
 type PageProps = { params: { slug: string } };
@@ -46,6 +47,20 @@ export default function ProductDetailPage({ params }: PageProps) {
               >
                 Buy now
               </a>
+              <button
+                className="mt-3 w-full rounded-md border border-dew-mint/40 px-4 py-2 text-[11px] text-dew-mint"
+                onClick={() =>
+                  addToCart({
+                    variantUniqueId: product.scalevVariantUniqueId,
+                    name: product.name,
+                    price: product.price,
+                    quantity: 1,
+                    checkoutUrl: product.scalevCheckoutUrl
+                  })
+                }
+              >
+                Add to cart
+              </button>
             </div>
             <div className="rounded-xl border border-neon-cyan/30 bg-space-800/60 p-6 text-xs text-white/70 shadow-insetPixel">
               <h3 className="font-arcade text-white">Compatibility</h3>

@@ -5,6 +5,7 @@ import CornerCallout from "@/components/CornerCallout";
 import FloatingBits from "@/components/FloatingBits";
 import Sidebar from "@/components/Sidebar";
 import TopNav from "@/components/TopNav";
+import CartDrawer from "@/components/CartDrawer";
 
 export default function AppShell({ children }: { children: ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -22,6 +23,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
           <main className="flex-1 px-6 pb-16 pt-4 md:px-10">{children}</main>
         </div>
         <CornerCallout />
+        <CartDrawer />
       </div>
     </div>
   );
