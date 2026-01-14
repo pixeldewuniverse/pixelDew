@@ -9,8 +9,10 @@ export type Product = {
   description: string;
   badges: string[];
   features: string[];
-  checkoutUrlEnvKey: string;
+  scalevCheckoutUrl: string;
 };
+
+const getCheckoutUrl = (envKey: string) => process.env[envKey] ?? "#";
 
 export const products: Product[] = [
   {
@@ -22,7 +24,7 @@ export const products: Product[] = [
     description: "A 12-week pixel planner with channel strategy, drops, and tracking sheets.",
     badges: ["Best Seller"],
     features: ["12-week calendar", "Channel strategy", "Metric tracker"],
-    checkoutUrlEnvKey: "NEXT_PUBLIC_LEMON_PRODUCT_URL_CALENDAR"
+    scalevCheckoutUrl: getCheckoutUrl("NEXT_PUBLIC_SCALEV_CHECKOUT_STARTER")
   },
   {
     id: "prod-flow",
@@ -33,7 +35,7 @@ export const products: Product[] = [
     description: "Visualize launches, tasks, and approvals with a neon-friendly flow canvas.",
     badges: ["New"],
     features: ["Flow canvas", "Approval lanes", "Weekly sprints"],
-    checkoutUrlEnvKey: "NEXT_PUBLIC_LEMON_PRODUCT_URL_FLOW"
+    scalevCheckoutUrl: getCheckoutUrl("NEXT_PUBLIC_SCALEV_CHECKOUT_BUILDER")
   },
   {
     id: "prod-prompt",
@@ -44,7 +46,7 @@ export const products: Product[] = [
     description: "50 high-converting prompts for ads, hooks, and conversion copy.",
     badges: [],
     features: ["50 prompts", "Ad hooks", "Conversion copy"],
-    checkoutUrlEnvKey: "NEXT_PUBLIC_LEMON_PRODUCT_URL_PROMPTS"
+    scalevCheckoutUrl: getCheckoutUrl("NEXT_PUBLIC_SCALEV_CHECKOUT_STARTER")
   },
   {
     id: "prod-ui",
@@ -55,7 +57,29 @@ export const products: Product[] = [
     description: "Neon mint UI components, grids, and buttons for PixelDew-ready layouts.",
     badges: ["Best Seller"],
     features: ["120+ components", "Dark UI", "Figma ready"],
-    checkoutUrlEnvKey: "NEXT_PUBLIC_LEMON_PRODUCT_URL_UI"
+    scalevCheckoutUrl: getCheckoutUrl("NEXT_PUBLIC_SCALEV_CHECKOUT_PRO")
+  },
+  {
+    id: "prod-landing",
+    slug: "pixeldew-landing-page-template",
+    name: "PixelDew Landing Page",
+    category: "Templates",
+    price: "179k",
+    description: "Hero-first landing page template with pixel glow sections and CTA blocks.",
+    badges: ["New"],
+    features: ["Hero + CTA blocks", "Responsive layout", "Editable components"],
+    scalevCheckoutUrl: getCheckoutUrl("NEXT_PUBLIC_SCALEV_CHECKOUT_BUILDER")
+  },
+  {
+    id: "prod-webdesign",
+    slug: "pixeldew-web-design-pack",
+    name: "PixelDew Web Design Pack",
+    category: "Templates",
+    price: "219k",
+    description: "Multi-section web design pack with layouts, grids, and pixel accents.",
+    badges: [],
+    features: ["Homepage + sections", "Component library", "Style guide"],
+    scalevCheckoutUrl: getCheckoutUrl("NEXT_PUBLIC_SCALEV_CHECKOUT_PRO")
   },
   {
     id: "bundle-creator",
@@ -66,7 +90,7 @@ export const products: Product[] = [
     description: "Everything you need to ship: calendar, prompt pack, and UI kit.",
     badges: ["Bundle"],
     features: ["Calendar + prompts + UI kit", "Commercial license", "Updates included"],
-    checkoutUrlEnvKey: "NEXT_PUBLIC_LEMON_PRODUCT_URL_CREATOR"
+    scalevCheckoutUrl: getCheckoutUrl("NEXT_PUBLIC_SCALEV_CHECKOUT_STUDIO")
   }
 ];
 
