@@ -15,14 +15,14 @@ const bundles = [
     price: "249k",
     original: "399k",
     items: ["Content Calendar", "Prompt Pack", "Launch checklist"],
-    checkoutUrlEnvKey: "NEXT_PUBLIC_LEMON_PRODUCT_URL_STARTER_PACK"
+    checkoutUrl: process.env.NEXT_PUBLIC_SCALEV_CHECKOUT_STARTER ?? "#"
   },
   {
     name: "Creator Pack",
     price: "299k",
     original: "499k",
     items: ["Planner + UI Kit", "Prompt Pack", "Commercial license"],
-    checkoutUrlEnvKey: "NEXT_PUBLIC_LEMON_PRODUCT_URL_CREATOR"
+    checkoutUrl: process.env.NEXT_PUBLIC_SCALEV_CHECKOUT_STUDIO ?? "#"
   }
 ];
 
@@ -63,7 +63,7 @@ const faqs = [
   },
   {
     question: "Checkout pakai apa?",
-    answer: "Checkout menggunakan LemonSqueezy dengan opsi kartu internasional."
+    answer: "Checkout menggunakan Scalev dengan opsi pembayaran yang fleksibel."
   },
   {
     question: "Bisa request custom?",
@@ -78,8 +78,6 @@ export default function HomePage() {
     if (activeFilter === "All") return products.filter((product) => product.category !== "Bundle");
     return products.filter((product) => product.category === activeFilter);
   }, [activeFilter]);
-
-  const getCheckoutUrl = (envKey: string) => (process.env[envKey] as string | undefined) ?? "#";
 
   return (
     <AppShell>
@@ -142,8 +140,10 @@ export default function HomePage() {
                     View details
                   </a>
                   <a
-                    href={getCheckoutUrl(product.checkoutUrlEnvKey)}
+                    href={product.scalevCheckoutUrl}
                     className="cta-button rounded-md bg-dew-mint px-3 py-2 text-center text-[11px] font-arcade text-space-900"
+                    target="_blank"
+                    rel="noreferrer"
                   >
                     Buy now
                   </a>
@@ -172,8 +172,10 @@ export default function HomePage() {
                 ))}
               </ul>
               <a
-                href={getCheckoutUrl(bundle.checkoutUrlEnvKey)}
+                href={bundle.checkoutUrl}
                 className="cta-button mt-4 inline-block rounded-md bg-dew-mint px-4 py-2 text-[11px] font-arcade text-space-900"
+                target="_blank"
+                rel="noreferrer"
               >
                 Get Bundle
               </a>

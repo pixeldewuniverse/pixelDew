@@ -31,8 +31,6 @@ export default function ProductsPage() {
     return result;
   }, [search, category, sort]);
 
-  const getCheckoutUrl = (envKey: string) => (process.env[envKey] as string | undefined) ?? "#";
-
   return (
     <AppShell>
       <div className="mx-auto max-w-6xl">
@@ -95,8 +93,10 @@ export default function ProductsPage() {
                   View details
                 </a>
                 <a
-                  href={getCheckoutUrl(product.checkoutUrlEnvKey)}
+                  href={product.scalevCheckoutUrl}
                   className="cta-button rounded-md bg-dew-mint px-3 py-2 text-center text-[11px] font-arcade text-space-900"
+                  target="_blank"
+                  rel="noreferrer"
                 >
                   Buy now
                 </a>

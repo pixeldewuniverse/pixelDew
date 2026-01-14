@@ -16,8 +16,6 @@ export default function ProductDetailPage({ params }: PageProps) {
     );
   }
 
-  const checkoutUrl = (process.env[product.checkoutUrlEnvKey] as string | undefined) ?? "#";
-
   return (
     <AppShell>
       <div className="mx-auto max-w-5xl">
@@ -41,8 +39,10 @@ export default function ProductDetailPage({ params }: PageProps) {
               <div className="text-white/60">Price</div>
               <div className="mt-2 text-2xl text-dew-mint">{product.price}</div>
               <a
-                href={checkoutUrl}
+                href={product.scalevCheckoutUrl}
                 className="cta-button mt-4 block rounded-md bg-dew-mint px-4 py-2 text-center text-[11px] font-arcade text-space-900"
+                target="_blank"
+                rel="noreferrer"
               >
                 Buy now
               </a>
