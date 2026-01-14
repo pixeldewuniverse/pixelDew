@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import AppShell from "@/components/AppShell";
 import Footer from "@/components/Footer";
@@ -25,13 +25,6 @@ export default function StudioPreviewPage() {
   const [project, setProject] = useState(() => (projectId ? getProject(projectId) : undefined));
   const [modalOpen, setModalOpen] = useState(false);
   const [missingCredits, setMissingCredits] = useState(0);
-
-  useEffect(() => {
-    setProject(projectId ? getProject(projectId) : undefined);
-    const handleUpdate = () => setProject(projectId ? getProject(projectId) : undefined);
-    window.addEventListener("pixeldew-store", handleUpdate);
-    return () => window.removeEventListener("pixeldew-store", handleUpdate);
-  }, [projectId]);
 
   const preview = useMemo(() => {
     if (!project) return previewCopy.landing;

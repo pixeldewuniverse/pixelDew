@@ -2,9 +2,9 @@
 
 const menuItems = [
   { label: "Home", href: "/" },
-  { label: "Studio", href: "/studio" },
-  { label: "Projects", href: "/projects" },
-  { label: "Billing", href: "/billing" }
+  { label: "Products", href: "/products" },
+  { label: "Checkout", href: "/checkout" },
+  { label: "Studio", href: "/studio" }
 ];
 
 export default function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {

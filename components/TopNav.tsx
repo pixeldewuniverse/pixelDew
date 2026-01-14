@@ -22,6 +22,12 @@ export default function TopNav({ onMenuToggle }: { onMenuToggle: () => void }) {
         </button>
       </div>
       <div className="flex flex-wrap items-center gap-3 md:flex-nowrap">
+        <a
+          href="/products"
+          className="rounded-md border border-dew-mint/50 px-4 py-2 text-[11px] font-arcade text-dew-mint transition hover:border-dew-mint hover:text-white md:text-xs"
+        >
+          Products
+        </a>
         <button
           className="rounded-md border border-dew-mint/50 px-4 py-2 text-[11px] font-arcade text-dew-mint transition hover:border-dew-mint hover:text-white md:text-xs"
           aria-label="View PixelDew plans"
@@ -29,10 +35,10 @@ export default function TopNav({ onMenuToggle }: { onMenuToggle: () => void }) {
           Plans
         </button>
         <a
-          href="/studio"
+          href="/checkout"
           className="cta-button rounded-md bg-dew-mint px-4 py-2 text-[11px] font-arcade text-space-900 shadow-glow md:text-xs"
         >
-          Enter Studio
+          Checkout
         </a>
       </div>
     </nav>
