@@ -1,21 +1,4 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { signIn, signOut, useSession } from "next-auth/react";
-import { getStore } from "@/lib/store";
-
 export default function TopNav({ onMenuToggle }: { onMenuToggle: () => void }) {
-  const { data: session } = useSession();
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [credits, setCredits] = useState(0);
-
-  useEffect(() => {
-    const update = () => setCredits(getStore().credits);
-    update();
-    window.addEventListener("pixeldew-store", update);
-    return () => window.removeEventListener("pixeldew-store", update);
-  }, []);
-
   return (
     <nav className="flex flex-col gap-4 px-4 py-4 md:flex-row md:items-center md:justify-between md:px-10 md:py-5">
       <div className="flex items-center justify-between gap-3 text-xs font-arcade tracking-wider text-dew-mint md:justify-start">
@@ -39,57 +22,18 @@ export default function TopNav({ onMenuToggle }: { onMenuToggle: () => void }) {
         </button>
       </div>
       <div className="flex flex-wrap items-center gap-3 md:flex-nowrap">
-        {session && (
-          <div className="rounded-md border border-dew-mint/30 bg-space-800/70 px-3 py-2 text-[11px] font-arcade text-dew-mint md:text-xs">
-            Credits: <span className="text-white">{credits}</span>
-          </div>
-        )}
         <button
           className="rounded-md border border-dew-mint/50 px-4 py-2 text-[11px] font-arcade text-dew-mint transition hover:border-dew-mint hover:text-white md:text-xs"
           aria-label="View PixelDew plans"
         >
           Plans
         </button>
-        {!session ? (
-          <button
-            className="cta-button rounded-md bg-dew-mint px-4 py-2 text-[11px] font-arcade text-space-900 shadow-glow md:text-xs"
-            onClick={() => signIn()}
-          >
-            Sign In
-          </button>
-        ) : (
-          <div className="relative">
-            <button
-              className="cta-button flex items-center gap-2 rounded-md bg-dew-mint px-4 py-2 text-[11px] font-arcade text-space-900 shadow-glow md:text-xs"
-              onClick={() => setMenuOpen((open) => !open)}
-              aria-label="Open user menu"
-            >
-              Studio
-              <span className="flex h-5 w-5 items-center justify-center rounded-full border border-space-900/40 bg-space-900/10 text-[10px]">
-                {session.user?.name?.[0] ?? "P"}
-              </span>
-            </button>
-            {menuOpen && (
-              <div className="absolute right-0 mt-2 w-44 rounded-md border border-dew-mint/30 bg-space-800/90 p-2 text-xs text-white shadow-glow">
-                <a href="/billing" className="block rounded px-2 py-2 hover:bg-space-900/70">
-                  Billing
-                </a>
-                <a href="/projects" className="block rounded px-2 py-2 hover:bg-space-900/70">
-                  Projects
-                </a>
-                <a href="/billing" className="block rounded px-2 py-2 hover:bg-space-900/70">
-                  Buy Credits
-                </a>
-                <button
-                  className="w-full rounded px-2 py-2 text-left hover:bg-space-900/70"
-                  onClick={() => signOut({ callbackUrl: "/" })}
-                >
-                  Sign out
-                </button>
-              </div>
-            )}
-          </div>
-        )}
+        <a
+          href="/studio"
+          className="cta-button rounded-md bg-dew-mint px-4 py-2 text-[11px] font-arcade text-space-900 shadow-glow md:text-xs"
+        >
+          Enter Studio
+        </a>
       </div>
     </nav>
   );
