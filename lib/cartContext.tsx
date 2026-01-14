@@ -1,6 +1,6 @@
-\"use client\";
+"use client";
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from \"react\";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
 export type CartItem = {
   id: string;
@@ -20,15 +20,15 @@ type CartContextValue = {
 };
 
 const CartContext = createContext<CartContextValue | undefined>(undefined);
-const CART_KEY = \"pixeldew-cart\";
+const CART_KEY = "pixeldew-cart";
 
-const parsePrice = (price: string) => parseInt(price.replace(/\\D/g, \"\"), 10) || 0;
+const parsePrice = (price: string) => parseInt(price.replace(/\D/g, ""), 10) || 0;
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
 
   useEffect(() => {
-    if (typeof window === \"undefined\") return;
+    if (typeof window === "undefined") return;
     const stored = window.localStorage.getItem(CART_KEY);
     if (stored) {
       try {
@@ -40,7 +40,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (typeof window === \"undefined\") return;
+    if (typeof window === "undefined") return;
     window.localStorage.setItem(CART_KEY, JSON.stringify(items));
   }, [items]);
 
@@ -83,7 +83,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 export const useCart = () => {
   const context = useContext(CartContext);
   if (!context) {
-    throw new Error(\"useCart must be used within CartProvider\");
+    throw new Error("useCart must be used within CartProvider");
   }
   return context;
 };
