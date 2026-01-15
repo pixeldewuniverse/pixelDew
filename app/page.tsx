@@ -1,10 +1,12 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import AppShell from "@/components/AppShell";
 import CommandCenterPanel from "@/components/CommandCenterPanel";
 import Footer from "@/components/Footer";
 import PixelTitle from "@/components/PixelTitle";
+import { useCart } from "@/components/cart/CartProvider";
 import { products } from "@/lib/products";
 
 const filters = ["All", "Templates", "Planner", "Prompts", "UI Kit"] as const;
@@ -73,6 +75,8 @@ const faqs = [
 
 export default function HomePage() {
   const [activeFilter, setActiveFilter] = useState<(typeof filters)[number]>("All");
+  const [addedSlug, setAddedSlug] = useState<string | null>(null);
+  const { addItem } = useCart();
 
   const filteredProducts = useMemo(() => {
     if (activeFilter === "All") return products.filter((product) => product.category !== "Bundle");
@@ -80,6 +84,14 @@ export default function HomePage() {
   }, [activeFilter]);
 
   const getCheckoutUrl = (envKey: string) => (process.env[envKey] as string | undefined) ?? "#";
+
+  const handleAddToCart = (slug: string) => {
+    const product = products.find((item) => item.slug === slug);
+    if (!product) return;
+    addItem(product);
+    setAddedSlug(slug);
+    window.setTimeout(() => setAddedSlug((current) => (current === slug ? null : current)), 1400);
+  };
 
   return (
     <AppShell>
@@ -141,12 +153,19 @@ export default function HomePage() {
                   >
                     View details
                   </a>
-                  <a
-                    href={getCheckoutUrl(product.checkoutUrlEnvKey)}
+                  <button
+                    type="button"
+                    onClick={() => handleAddToCart(product.slug)}
+                    className="rounded-md border border-neon-cyan/40 px-3 py-2 text-center text-[11px] text-neon-cyan"
+                  >
+                    {addedSlug === product.slug ? "Added ✅" : "Add to cart"}
+                  </button>
+                  <Link
+                    href={`/checkout?product=${product.slug}`}
                     className="cta-button rounded-md bg-dew-mint px-3 py-2 text-center text-[11px] font-arcade text-space-900"
                   >
                     Buy now
-                  </a>
+                  </Link>
                 </div>
               </div>
             ))}

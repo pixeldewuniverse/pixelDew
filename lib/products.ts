@@ -10,6 +10,7 @@ export type Product = {
   badges: string[];
   features: string[];
   checkoutUrlEnvKey: string;
+  scalevVariantUniqueId: string;
 };
 
 export const products: Product[] = [
@@ -22,7 +23,8 @@ export const products: Product[] = [
     description: "A 12-week pixel planner with channel strategy, drops, and tracking sheets.",
     badges: ["Best Seller"],
     features: ["12-week calendar", "Channel strategy", "Metric tracker"],
-    checkoutUrlEnvKey: "NEXT_PUBLIC_LEMON_PRODUCT_URL_CALENDAR"
+    checkoutUrlEnvKey: "NEXT_PUBLIC_LEMON_PRODUCT_URL_CALENDAR",
+    scalevVariantUniqueId: "variant_calendar"
   },
   {
     id: "prod-flow",
@@ -33,7 +35,8 @@ export const products: Product[] = [
     description: "Visualize launches, tasks, and approvals with a neon-friendly flow canvas.",
     badges: ["New"],
     features: ["Flow canvas", "Approval lanes", "Weekly sprints"],
-    checkoutUrlEnvKey: "NEXT_PUBLIC_LEMON_PRODUCT_URL_FLOW"
+    checkoutUrlEnvKey: "NEXT_PUBLIC_LEMON_PRODUCT_URL_FLOW",
+    scalevVariantUniqueId: "variant_flow"
   },
   {
     id: "prod-prompt",
@@ -44,7 +47,8 @@ export const products: Product[] = [
     description: "50 high-converting prompts for ads, hooks, and conversion copy.",
     badges: [],
     features: ["50 prompts", "Ad hooks", "Conversion copy"],
-    checkoutUrlEnvKey: "NEXT_PUBLIC_LEMON_PRODUCT_URL_PROMPTS"
+    checkoutUrlEnvKey: "NEXT_PUBLIC_LEMON_PRODUCT_URL_PROMPTS",
+    scalevVariantUniqueId: "variant_prompts"
   },
   {
     id: "prod-ui",
@@ -55,7 +59,8 @@ export const products: Product[] = [
     description: "Neon mint UI components, grids, and buttons for PixelDew-ready layouts.",
     badges: ["Best Seller"],
     features: ["120+ components", "Dark UI", "Figma ready"],
-    checkoutUrlEnvKey: "NEXT_PUBLIC_LEMON_PRODUCT_URL_UI"
+    checkoutUrlEnvKey: "NEXT_PUBLIC_LEMON_PRODUCT_URL_UI",
+    scalevVariantUniqueId: "variant_ui"
   },
   {
     id: "bundle-creator",
@@ -66,7 +71,8 @@ export const products: Product[] = [
     description: "Everything you need to ship: calendar, prompt pack, and UI kit.",
     badges: ["Bundle"],
     features: ["Calendar + prompts + UI kit", "Commercial license", "Updates included"],
-    checkoutUrlEnvKey: "NEXT_PUBLIC_LEMON_PRODUCT_URL_CREATOR"
+    checkoutUrlEnvKey: "NEXT_PUBLIC_LEMON_PRODUCT_URL_CREATOR",
+    scalevVariantUniqueId: "variant_creator_bundle"
   }
 ];
 
