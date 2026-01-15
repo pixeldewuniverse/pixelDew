@@ -4,7 +4,7 @@ import type { NextRequest } from "next/server";
 const SCALEV_API_BASE = process.env.SCALEV_API_BASE;
 const SCALEV_STORE_UNIQUE_ID = process.env.SCALEV_STORE_UNIQUE_ID;
 const SCALEV_API_KEY = process.env.SCALEV_API_KEY;
-const SCALEV_PAYMENT_METHOD = process.env.SCALEV_PAYMENT_METHOD;
+const SCALEV_PAYMENT_METHOD = process.env.SCALEV_PAYMENT_METHOD ?? "invoice";
 const SCALEV_PUBLIC_ORDER_BASE = process.env.NEXT_PUBLIC_SCALEV_PUBLIC_ORDER_BASE;
 
 export async function POST(request: NextRequest) {
@@ -12,7 +12,6 @@ export async function POST(request: NextRequest) {
     !SCALEV_API_BASE ||
     !SCALEV_STORE_UNIQUE_ID ||
     !SCALEV_API_KEY ||
-    !SCALEV_PAYMENT_METHOD ||
     !SCALEV_PUBLIC_ORDER_BASE
   ) {
     return NextResponse.json(
