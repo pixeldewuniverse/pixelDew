@@ -1,118 +1,84 @@
 import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-export async function POST(req: Request) {
-  try {
-    const API_BASE = process.env.SCALEV_API_BASE;
-    const API_KEY = process.env.SCALEV_API_KEY;
-    const STORE_ID = process.env.SCALEV_STORE_UNIQUE_ID;
-    const PAYMENT_METHOD = process.env.SCALEV_PAYMENT_METHOD || "invoice";
-    const PUBLIC_BASE = process.env.NEXT_PUBLIC_SCALEV_PUBLIC_ORDER_BASE;
+const SCALEV_API_BASE = process.env.SCALEV_API_BASE;
+const SCALEV_STORE_UNIQUE_ID = process.env.SCALEV_STORE_UNIQUE_ID;
+const SCALEV_API_KEY = process.env.SCALEV_API_KEY;
+const SCALEV_PAYMENT_METHOD = process.env.SCALEV_PAYMENT_METHOD ?? "invoice";
+const SCALEV_PUBLIC_ORDER_BASE = process.env.NEXT_PUBLIC_SCALEV_PUBLIC_ORDER_BASE;
 
-    if (!API_BASE || !API_KEY || !STORE_ID || !PUBLIC_BASE) {
-      return NextResponse.json(
-        { ok: false, error: "Missing Scalev server configuration" },
-        { status: 500 }
-      );
-    }
-    
-
-    const body = await req.json().catch(() => null);
-    if (!body) {
-      return NextResponse.json({ ok: false, error: "Invalid JSON body" }, { status: 400 });
-    }
-
-    const { customer_name, customer_phone, customer_email, items } = body;
-
-    if (!customer_name || !customer_phone || !customer_email) {
-      return NextResponse.json(
-        { ok: false, error: "Missing customer fields" },
-        { status: 400 }
-      );
-    }
-    if (!Array.isArray(items) || items.length === 0) {
-      return NextResponse.json(
-        { ok: false, error: "No items provided" },
-        { status: 400 }
-      );
-    }
-    for (const it of items) {
-      if (!it?.variant_unique_id || !it?.quantity) {
-        return NextResponse.json(
-          { ok: false, error: "Invalid items format" },
-          { status: 400 }
-        );
-      }
-    }
-
-    const payload = {
-      store_unique_id: STORE_ID,
-      customer_name,
-      customer_phone,
-      customer_email,
-      ordervariants: items,
-      payment_method: PAYMENT_METHOD,
-    };
-
-    const scalevRes = await fetch(`${API_BASE}/order`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
-
-    const text = await scalevRes.text();
-    let data: any = null;
-    try {
-      data = JSON.parse(text);
-    } catch {
-      // leave data null
-    }
-
-    if (!scalevRes.ok) {
-      return NextResponse.json(
-        { ok: false, error: "Scalev order failed", status: scalevRes.status, details: data ?? text },
-        { status: 502 }
-      );
-    }
-  
-
-    const secret_slug = data?.secret_slug || data?.data?.secret_slug;
-    if (!secret_slug) {
-      return NextResponse.json(
-        { ok: false, error: "Scalev response missing secret_slug", details: data ?? text },
-        { status: 502 }
-      );
-    }
-
-    const redirectUrl = `${PUBLIC_BASE}/${secret_slug}/success`;
-    return NextResponse.json({ ok: true, secret_slug, redirectUrl });
-  } catch (e: any) {
+export async function POST(request: NextRequest) {
+  if (
+    !SCALEV_API_BASE ||
+    !SCALEV_STORE_UNIQUE_ID ||
+    !SCALEV_API_KEY ||
+    !SCALEV_PUBLIC_ORDER_BASE
+  ) {
     return NextResponse.json(
-      { ok: false, error: "Server error", details: String(e?.message ?? e) },
+      { ok: false, error: "Missing Scalev server configuration" },
       { status: 500 }
     );
-    const res = await fetch("/api/scalev/checkout", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify(payload),
-});
-
-const text = await res.text();
-let data: any;
-try {
-  data = JSON.parse(text);
-} catch {
-  throw new Error(`Invalid response from server: ${text.slice(0, 200)}`);
-}
-
-if (!res.ok || !data?.ok) {
-  throw new Error(data?.error || "Checkout failed");
-}
-
-window.location.href = data.redirectUrl;
-
-
   }
+
+  const body = (await request.json()) as {
+    customer_name?: string;
+    customer_phone?: string;
+    customer_email?: string;
+    items?: Array<{ quantity: number; variant_unique_id: string }>;
+  };
+
+  if (!body.customer_name || !body.customer_phone || !body.customer_email) {
+    return NextResponse.json({ ok: false, message: "Missing customer fields." }, { status: 400 });
+  }
+
+  if (!body.items || !Array.isArray(body.items) || body.items.length === 0) {
+    return NextResponse.json({ ok: false, message: "Missing order items." }, { status: 400 });
+  }
+
+  const ordervariants = body.items.map((item) => ({
+    quantity: item.quantity,
+    variant_unique_id: item.variant_unique_id
+  }));
+
+  const payload = {
+    store_unique_id: SCALEV_STORE_UNIQUE_ID,
+    customer_name: body.customer_name,
+    customer_phone: body.customer_phone,
+    customer_email: body.customer_email,
+    ordervariants,
+    payment_method: SCALEV_PAYMENT_METHOD
+  };
+
+  const response = await fetch(`${SCALEV_API_BASE.replace(/\/$/, "")}/orders`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${SCALEV_API_KEY}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(payload)
+  });
+
+  const data = (await response.json().catch(() => ({ message: "Invalid response." }))) as {
+    secret_slug?: string;
+    message?: string;
+  };
+
+  if (!response.ok) {
+    return NextResponse.json(
+      { ok: false, message: data.message ?? "Scalev checkout failed." },
+      { status: response.status }
+    );
+  }
+
+  if (!data.secret_slug) {
+    return NextResponse.json(
+      { ok: false, message: "Scalev response missing secret slug." },
+      { status: 502 }
+    );
+  }
+
+  const base = SCALEV_PUBLIC_ORDER_BASE.replace(/\/$/, "");
+  const redirectUrl = `${base}/${data.secret_slug}/success`;
+
+  return NextResponse.json({ ok: true, secret_slug: data.secret_slug, redirectUrl });
 }
