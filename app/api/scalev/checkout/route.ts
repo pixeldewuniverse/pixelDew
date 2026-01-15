@@ -53,6 +53,15 @@ export async function POST(request: NextRequest) {
     payment_method: SCALEV_PAYMENT_METHOD
   };
 
+  console.info("Scalev checkout request payload:", {
+    store_unique_id: SCALEV_STORE_UNIQUE_ID,
+    customer_name: body.customer_name,
+    customer_phone: body.customer_phone,
+    customer_email: body.customer_email,
+    ordervariants,
+    payment_method: SCALEV_PAYMENT_METHOD
+  });
+
   const response = await fetch(`${SCALEV_API_BASE.replace(/\/$/, "")}/orders`, {
     method: "POST",
     headers: {
@@ -62,7 +71,14 @@ export async function POST(request: NextRequest) {
     body: JSON.stringify(payload)
   });
 
-  const data = (await response.json().catch(() => ({ message: "Invalid response." }))) as {
+  const responseText = await response.text();
+  console.info("Scalev checkout response:", {
+    status: response.status,
+    ok: response.ok,
+    body: responseText
+  });
+
+  const data = (responseText ? JSON.parse(responseText) : {}) as {
     secret_slug?: string;
     message?: string;
   };
