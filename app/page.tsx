@@ -91,14 +91,6 @@ export default function HomePage() {
     window.setTimeout(() => setAddedSlug((current) => (current === slug ? null : current)), 1400);
   };
 
-  const handleAddToCart = (slug: string) => {
-    const product = products.find((item) => item.slug === slug);
-    if (!product) return;
-    addItem(product);
-    setAddedSlug(slug);
-    window.setTimeout(() => setAddedSlug((current) => (current === slug ? null : current)), 1400);
-  };
-
   return (
     <AppShell>
       <div className="mx-auto max-w-6xl">
