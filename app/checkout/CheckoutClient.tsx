@@ -24,6 +24,7 @@ type CheckoutResponse = {
   secret_slug?: string;
   redirectUrl?: string;
   message?: string;
+  error?: string;
 };
 
 export default function CheckoutClient() {
@@ -71,7 +72,11 @@ export default function CheckoutClient() {
       const text = await response.text();
       const data = (text ? JSON.parse(text) : {}) as CheckoutResponse;
       if (!response.ok || !data.ok) {
-        throw new Error(data.message ?? "Checkout failed. Please try again.");
+        throw new Error(
+          data.message ??
+            data.error ??
+            "Checkout failed. Please try again."
+        );
       }
       if (!data.redirectUrl) {
         throw new Error("Checkout failed. Missing redirect URL.");
