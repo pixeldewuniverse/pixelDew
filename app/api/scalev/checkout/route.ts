@@ -14,6 +14,7 @@ export async function POST(req: Request) {
         { status: 500 }
       );
     }
+    
 
     const body = await req.json().catch(() => null);
     if (!body) {
@@ -111,6 +112,7 @@ if (!res.ok || !data?.ok) {
 }
 
 window.location.href = data.redirectUrl;
+
 
   }
 }
