@@ -96,7 +96,7 @@ export default function HomePage() {
       <div className="mx-auto max-w-6xl">
         <PixelTitle />
         <div className="mt-4 flex flex-col items-center gap-2 text-center text-xs text-white/60 md:text-sm">
-          <span className="font-arcade text-neon-cyan">pixeldew.xyz</span>
+          <span className="font-arcade text-neon-cyan">pixeldew</span>
           <p className="max-w-xl">A pixel-born studio for big ideas.</p>
         </div>
         <div className="mt-6 text-center text-sm text-white/70 md:text-base">
