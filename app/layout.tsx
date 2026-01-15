@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Press_Start_2P } from "next/font/google";
 import "./globals.css";
+import CartProvider from "@/components/cart/CartProvider";
+import FloatingCartButton from "@/components/cart/FloatingCartButton";
 
 const pressStart = Press_Start_2P({
   weight: "400",
@@ -20,7 +22,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={pressStart.variable}>
-      <body className="bg-space-900 text-white antialiased font-body">{children}</body>
+      <body className="bg-space-900 text-white antialiased font-body">
+        <CartProvider>
+          {children}
+          <FloatingCartButton />
+        </CartProvider>
+      </body>
     </html>
   );
 }
