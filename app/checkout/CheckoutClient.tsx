@@ -66,6 +66,7 @@ export default function CheckoutClient() {
           ]
         })
       });
+      
 
       const data = (await response.json()) as CheckoutResponse;
       if (!response.ok || !data.ok) {
@@ -113,48 +114,54 @@ export default function CheckoutClient() {
             <span className="text-dew-mint">{product.price}</span>
           </div>
         </div>
-        <form className="mt-6 grid gap-3" onSubmit={handlePayNow}>
-          <div className="grid gap-2">
-            <label className="text-[10px] uppercase tracking-widest text-white/50">Name</label>
-            <input
-              value={form.name}
-              onChange={handleFieldChange("name")}
-              required
-              className="rounded-md border border-white/10 bg-space-900/60 px-3 py-2 text-xs text-white/80"
-              placeholder="Pixeldew buyer"
-            />
-          </div>
-          <div className="grid gap-2">
-            <label className="text-[10px] uppercase tracking-widest text-white/50">Phone</label>
-            <input
-              value={form.phone}
-              onChange={handleFieldChange("phone")}
-              required
-              className="rounded-md border border-white/10 bg-space-900/60 px-3 py-2 text-xs text-white/80"
-              placeholder="+62..."
-            />
-          </div>
-          <div className="grid gap-2">
-            <label className="text-[10px] uppercase tracking-widest text-white/50">Email</label>
-            <input
-              type="email"
-              value={form.email}
-              onChange={handleFieldChange("email")}
-              required
-              className="rounded-md border border-white/10 bg-space-900/60 px-3 py-2 text-xs text-white/80"
-              placeholder="hello@pixeldew.xyz"
-            />
-          </div>
-          {status.error && <div className="text-[11px] text-rose-200">{status.error}</div>}
-          <button
-            type="submit"
-            disabled={status.loading}
-            className="cta-button rounded-md bg-dew-mint px-4 py-2 text-[11px] font-arcade text-space-900 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {status.loading ? "Processing..." : "Pay now"}
-          </button>
-          <div className="text-[10px] text-white/40">Powered by Scalev</div>
-        </form>
+       <form
+  onSubmit={async (e) => {
+    e.preventDefault();          // ✅ ini kunci
+    if (status.loading) return;  // ✅ cegah double submit
+
+    setStatus({ loading: true, error: null });
+
+    try {
+      const res = await fetch("/api/scalev/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const text = await res.text();
+      let data: any;
+      try {
+        data = JSON.parse(text);
+      } catch {
+        throw new Error(`Invalid response: ${text.slice(0, 200)}`);
+      }
+
+      if (!res.ok || !data?.ok || !data?.redirectUrl) {
+        throw new Error(data?.error || "Checkout failed");
+      }
+
+      window.location.href = data.redirectUrl;
+    } catch (err: any) {
+      setStatus({ loading: false, error: err?.message ?? String(err) });
+      return;
+    }
+  }}
+>
+
+  <button
+    type="submit"
+    disabled={status.loading}
+    aria-busy={status.loading}
+    className="cta-button rounded-md bg-dew-mint px-4 py-2 text-[11px] font-arcade text-space-900 disabled:cursor-not-allowed disabled:opacity-60"
+  >
+    {status.loading ? "Processing..." : "Pay now"}
+  </button>
+
+  {status.error ? (
+    <p className="mt-2 text-[11px] text-red-300">{status.error}</p>
+  ) : null}
+</form>
+
       </div>
     );
   };
