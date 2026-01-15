@@ -27,21 +27,19 @@ Alternatively, connect the repo on Vercel and use the default Next.js settings.
 ## Environment Variables
 
 ```bash
-NEXT_PUBLIC_LEMON_PRODUCT_URL_CALENDAR=...
-NEXT_PUBLIC_LEMON_PRODUCT_URL_FLOW=...
-NEXT_PUBLIC_LEMON_PRODUCT_URL_PROMPTS=...
-NEXT_PUBLIC_LEMON_PRODUCT_URL_UI=...
-NEXT_PUBLIC_LEMON_PRODUCT_URL_CREATOR=...
-NEXT_PUBLIC_LEMON_PRODUCT_URL_STARTER_PACK=...
-NEXT_PUBLIC_LEMON_PRODUCT_URL_PRO=...
-NEXT_PUBLIC_LEMON_PRODUCT_URL_STUDIO=...
-LEMONSQUEEZY_WEBHOOK_SECRET=...
+SCALEV_API_BASE=https://api.scalev.id/v2
+SCALEV_API_KEY=
+SCALEV_STORE_UNIQUE_ID=
+SCALEV_PAYMENT_METHOD=invoice
+SCALEV_WEBHOOK_SIGNING_SECRET=
+NEXT_PUBLIC_SCALEV_PUBLIC_ORDER_BASE=https://app.scalev.id/order/public
+NEXT_PUBLIC_ADMIN_DEBUG_TOKEN=
 ```
 
 ## Webhooks
 
-Point LemonSqueezy webhooks to:
+Point Scalev webhooks to:
 
 ```
-/api/webhooks/lemonsqueezy
+/api/webhooks/scalev
 ```
