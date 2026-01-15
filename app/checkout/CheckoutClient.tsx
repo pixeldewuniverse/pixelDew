@@ -23,8 +23,8 @@ type CheckoutResponse = {
   ok: boolean;
   secret_slug?: string;
   redirectUrl?: string;
-  message?: string;
   error?: string;
+  details?: unknown;
 };
 
 export default function CheckoutClient() {
@@ -70,13 +70,17 @@ export default function CheckoutClient() {
       });
 
       const text = await response.text();
-      const data = (text ? JSON.parse(text) : {}) as CheckoutResponse;
+      let data: CheckoutResponse | null = null;
+      try {
+        data = (text ? JSON.parse(text) : {}) as CheckoutResponse;
+      } catch {
+        console.error("Scalev checkout returned non-JSON:", text);
+        throw new Error("Server returned non-JSON response.");
+      }
       if (!response.ok || !data.ok) {
-        throw new Error(
-          data.message ??
-            data.error ??
-            "Checkout failed. Please try again."
-        );
+        const details =
+          data.details ? ` Details: ${JSON.stringify(data.details)}` : "";
+        throw new Error((data.error ?? "Checkout failed.") + details);
       }
       if (!data.redirectUrl) {
         throw new Error("Checkout failed. Missing redirect URL.");
