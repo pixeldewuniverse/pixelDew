@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
     customer_phone: body.customer_phone,
     customer_email: body.customer_email,
     ordervariants,
-    payment_method: SCALEV_PAYMENT_METHOD
+    payment_method: process.env.SCALEV_PAYMENT_METHOD ?? "invoice",
   };
 
   const response = await fetch(`${SCALEV_API_BASE.replace(/\/$/, "")}/orders`, {
