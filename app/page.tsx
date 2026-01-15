@@ -17,14 +17,14 @@ const bundles = [
     price: "249k",
     original: "399k",
     items: ["Content Calendar", "Prompt Pack", "Launch checklist"],
-    checkoutUrlEnvKey: "NEXT_PUBLIC_LEMON_PRODUCT_URL_STARTER_PACK"
+    slug: "starter-pack"
   },
   {
     name: "Creator Pack",
     price: "299k",
     original: "499k",
     items: ["Planner + UI Kit", "Prompt Pack", "Commercial license"],
-    checkoutUrlEnvKey: "NEXT_PUBLIC_LEMON_PRODUCT_URL_CREATOR"
+    slug: "bundle-creator-pack"
   }
 ];
 
@@ -65,7 +65,7 @@ const faqs = [
   },
   {
     question: "Checkout pakai apa?",
-    answer: "Checkout menggunakan LemonSqueezy dengan opsi kartu internasional."
+    answer: "Checkout menggunakan Scalev dengan opsi invoice."
   },
   {
     question: "Bisa request custom?",
@@ -83,7 +83,13 @@ export default function HomePage() {
     return products.filter((product) => product.category === activeFilter);
   }, [activeFilter]);
 
-  const getCheckoutUrl = (envKey: string) => (process.env[envKey] as string | undefined) ?? "#";
+  const handleAddToCart = (slug: string) => {
+    const product = products.find((item) => item.slug === slug);
+    if (!product) return;
+    addItem(product);
+    setAddedSlug(slug);
+    window.setTimeout(() => setAddedSlug((current) => (current === slug ? null : current)), 1400);
+  };
 
   const handleAddToCart = (slug: string) => {
     const product = products.find((item) => item.slug === slug);
@@ -190,12 +196,12 @@ export default function HomePage() {
                   <li key={item}>• {item}</li>
                 ))}
               </ul>
-              <a
-                href={getCheckoutUrl(bundle.checkoutUrlEnvKey)}
+              <Link
+                href={`/checkout?product=${bundle.slug}`}
                 className="cta-button mt-4 inline-block rounded-md bg-dew-mint px-4 py-2 text-[11px] font-arcade text-space-900"
               >
                 Get Bundle
-              </a>
+              </Link>
             </div>
           ))}
         </section>

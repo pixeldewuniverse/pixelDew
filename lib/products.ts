@@ -9,7 +9,6 @@ export type Product = {
   description: string;
   badges: string[];
   features: string[];
-  checkoutUrlEnvKey: string;
   scalevVariantUniqueId: string;
 };
 
@@ -23,7 +22,6 @@ export const products: Product[] = [
     description: "A 12-week pixel planner with channel strategy, drops, and tracking sheets.",
     badges: ["Best Seller"],
     features: ["12-week calendar", "Channel strategy", "Metric tracker"],
-    checkoutUrlEnvKey: "NEXT_PUBLIC_LEMON_PRODUCT_URL_CALENDAR",
     scalevVariantUniqueId: "variant_calendar"
   },
   {
@@ -35,7 +33,6 @@ export const products: Product[] = [
     description: "Visualize launches, tasks, and approvals with a neon-friendly flow canvas.",
     badges: ["New"],
     features: ["Flow canvas", "Approval lanes", "Weekly sprints"],
-    checkoutUrlEnvKey: "NEXT_PUBLIC_LEMON_PRODUCT_URL_FLOW",
     scalevVariantUniqueId: "variant_flow"
   },
   {
@@ -47,7 +44,6 @@ export const products: Product[] = [
     description: "50 high-converting prompts for ads, hooks, and conversion copy.",
     badges: [],
     features: ["50 prompts", "Ad hooks", "Conversion copy"],
-    checkoutUrlEnvKey: "NEXT_PUBLIC_LEMON_PRODUCT_URL_PROMPTS",
     scalevVariantUniqueId: "variant_prompts"
   },
   {
@@ -59,8 +55,18 @@ export const products: Product[] = [
     description: "Neon mint UI components, grids, and buttons for PixelDew-ready layouts.",
     badges: ["Best Seller"],
     features: ["120+ components", "Dark UI", "Figma ready"],
-    checkoutUrlEnvKey: "NEXT_PUBLIC_LEMON_PRODUCT_URL_UI",
     scalevVariantUniqueId: "variant_ui"
+  },
+  {
+    id: "bundle-starter",
+    slug: "starter-pack",
+    name: "Starter Pack",
+    category: "Bundle",
+    price: "249k",
+    description: "Starter bundle with calendar, prompt pack, and launch checklist.",
+    badges: ["Bundle"],
+    features: ["Calendar + prompts", "Launch checklist", "Commercial license"],
+    scalevVariantUniqueId: "variant_starter_pack"
   },
   {
     id: "bundle-creator",
@@ -71,7 +77,6 @@ export const products: Product[] = [
     description: "Everything you need to ship: calendar, prompt pack, and UI kit.",
     badges: ["Bundle"],
     features: ["Calendar + prompts + UI kit", "Commercial license", "Updates included"],
-    checkoutUrlEnvKey: "NEXT_PUBLIC_LEMON_PRODUCT_URL_CREATOR",
     scalevVariantUniqueId: "variant_creator_bundle"
   }
 ];

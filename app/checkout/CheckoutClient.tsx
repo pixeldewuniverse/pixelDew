@@ -2,45 +2,11 @@
 
 import { useMemo, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import Script from "next/script";
 import AppShell from "@/components/AppShell";
 import Footer from "@/components/Footer";
 import { products } from "@/lib/products";
-
-type CheckoutOption = {
-  name: string;
-  price: string;
-  description: string;
-  envKey: string;
-};
-
-const checkoutOptions: CheckoutOption[] = [
-  {
-    name: "Starter Credits",
-    price: "149k",
-    description: "Perfect for first-time creators.",
-    envKey: "NEXT_PUBLIC_LEMON_PRODUCT_URL_STARTER_PACK"
-  },
-  {
-    name: "Builder",
-    price: "299k",
-    description: "Extra templates + commercial usage.",
-    envKey: "NEXT_PUBLIC_LEMON_PRODUCT_URL_CREATOR"
-  },
-  {
-    name: "Pro",
-    price: "499k",
-    description: "Unlock premium packs + updates.",
-    envKey: "NEXT_PUBLIC_LEMON_PRODUCT_URL_PRO"
-  },
-  {
-    name: "Studio",
-    price: "899k",
-    description: "Full library access for teams.",
-    envKey: "NEXT_PUBLIC_LEMON_PRODUCT_URL_STUDIO"
-  }
-];
 
 type QuickCheckoutForm = {
   name: string;
@@ -51,6 +17,13 @@ type QuickCheckoutForm = {
 type CheckoutStatus = {
   loading: boolean;
   error: string | null;
+};
+
+type CheckoutResponse = {
+  ok: boolean;
+  secret_slug?: string;
+  redirectUrl?: string;
+  message?: string;
 };
 
 export default function CheckoutClient() {
@@ -66,16 +39,6 @@ export default function CheckoutClient() {
     email: ""
   });
   const [status, setStatus] = useState<CheckoutStatus>({ loading: false, error: null });
-
-  const openCheckout = (envKey: string) => {
-    const url = process.env[envKey] as string | undefined;
-    if (!url) return;
-    if (window.LemonSqueezy?.Url?.Open) {
-      window.LemonSqueezy.Url.Open(url);
-      return;
-    }
-    window.location.href = url;
-  };
 
   const handleFieldChange = (key: keyof QuickCheckoutForm) => (event: ChangeEvent<HTMLInputElement>) => {
     setForm((current) => ({ ...current, [key]: event.target.value }));
@@ -95,22 +58,23 @@ export default function CheckoutClient() {
           customer_name: form.name,
           customer_phone: form.phone,
           customer_email: form.email,
-          variant_unique_id: product.scalevVariantUniqueId
+          items: [
+            {
+              quantity: 1,
+              variant_unique_id: product.scalevVariantUniqueId
+            }
+          ]
         })
       });
 
-      const data = (await response.json()) as { secret_slug?: string; message?: string };
-      if (!response.ok) {
+      const data = (await response.json()) as CheckoutResponse;
+      if (!response.ok || !data.ok) {
         throw new Error(data.message ?? "Checkout failed. Please try again.");
       }
-      if (!data.secret_slug) {
-        throw new Error("Checkout failed. Missing confirmation.");
+      if (!data.redirectUrl) {
+        throw new Error("Checkout failed. Missing redirect URL.");
       }
-      const base = (process.env.NEXT_PUBLIC_SCALEV_PUBLIC_ORDER_BASE ?? "").replace(/\/$/, "");
-      if (!base) {
-        throw new Error("Missing public order base.");
-      }
-      window.location.href = `${base}/${data.secret_slug}/success`;
+      window.location.href = data.redirectUrl;
     } catch (error) {
       const message = error instanceof Error ? error.message : "Checkout failed.";
       setStatus({ loading: false, error: message });
@@ -189,6 +153,7 @@ export default function CheckoutClient() {
           >
             {status.loading ? "Processing..." : "Pay now"}
           </button>
+          <div className="text-[10px] text-white/40">Powered by Scalev</div>
         </form>
       </div>
     );
@@ -196,7 +161,6 @@ export default function CheckoutClient() {
 
   return (
     <AppShell>
-      <Script src="https://app.lemonsqueezy.com/js/lemon.js" strategy="afterInteractive" />
       <div className="mx-auto max-w-5xl">
         <h1 className="font-arcade text-lg text-white">Checkout</h1>
         <p className="mt-2 text-xs text-white/60">Pick a pack or product link to complete your purchase.</p>
@@ -204,25 +168,26 @@ export default function CheckoutClient() {
           {productSlug ? (
             renderQuickCheckout()
           ) : (
-            <div className="grid gap-6 md:grid-cols-2">
-              {checkoutOptions.map((option) => (
-                <div
-                  key={option.name}
-                  className="rounded-xl border border-dew-mint/30 bg-space-800/60 p-6 text-xs text-white/70 shadow-insetPixel"
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="font-arcade text-white">{option.name}</span>
-                    <span className="text-dew-mint">{option.price}</span>
-                  </div>
-                  <p className="mt-3 text-white/60">{option.description}</p>
-                  <button
-                    className="cta-button mt-4 rounded-md bg-dew-mint px-4 py-2 text-[11px] font-arcade text-space-900"
-                    onClick={() => openCheckout(option.envKey)}
+            <div className="grid gap-4">
+              <div className="rounded-xl border border-dew-mint/30 bg-space-800/60 p-5 text-xs text-white/70 shadow-insetPixel">
+                <div className="text-white/60">Quick checkout requires a product.</div>
+                <div className="mt-2 text-[11px] text-white/50">Choose a product to continue.</div>
+              </div>
+              <div className="grid gap-4 md:grid-cols-2">
+                {products.map((item) => (
+                  <Link
+                    key={item.id}
+                    href={`/checkout?product=${item.slug}`}
+                    className="rounded-xl border border-dew-mint/30 bg-space-800/60 p-5 text-xs text-white/70 shadow-insetPixel"
                   >
-                    Checkout
-                  </button>
-                </div>
-              ))}
+                    <div className="flex items-center justify-between">
+                      <span className="font-arcade text-white">{item.name}</span>
+                      <span className="text-dew-mint">{item.price}</span>
+                    </div>
+                    <div className="mt-2 text-white/60">Pay with Scalev</div>
+                  </Link>
+                ))}
+              </div>
             </div>
           )}
         </div>
