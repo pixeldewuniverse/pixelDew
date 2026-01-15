@@ -8,14 +8,18 @@ const SCALEV_PAYMENT_METHOD = process.env.SCALEV_PAYMENT_METHOD ?? "invoice";
 const SCALEV_PUBLIC_ORDER_BASE = process.env.NEXT_PUBLIC_SCALEV_PUBLIC_ORDER_BASE;
 
 export async function POST(request: NextRequest) {
-  if (
-    !SCALEV_API_BASE ||
-    !SCALEV_STORE_UNIQUE_ID ||
-    !SCALEV_API_KEY ||
-    !SCALEV_PUBLIC_ORDER_BASE
-  ) {
+  const missingKeys = [
+    !SCALEV_API_BASE ? "SCALEV_API_BASE" : null,
+    !SCALEV_API_KEY ? "SCALEV_API_KEY" : null,
+    !SCALEV_STORE_UNIQUE_ID ? "SCALEV_STORE_UNIQUE_ID" : null,
+    !SCALEV_PAYMENT_METHOD ? "SCALEV_PAYMENT_METHOD" : null,
+    !SCALEV_PUBLIC_ORDER_BASE ? "NEXT_PUBLIC_SCALEV_PUBLIC_ORDER_BASE" : null
+  ].filter(Boolean) as string[];
+
+  if (missingKeys.length > 0) {
+    console.warn("Missing Scalev server configuration keys:", missingKeys.join(", "));
     return NextResponse.json(
-      { ok: false, error: "Missing Scalev server configuration" },
+      { ok: false, error: "Missing Scalev server configuration", missingKeys },
       { status: 500 }
     );
   }
