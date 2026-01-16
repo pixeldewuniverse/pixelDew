@@ -85,7 +85,11 @@ export async function POST(request: NextRequest) {
     body: JSON.stringify(payload)
   });
 
-  type ScalevResponse = { secret_slug?: string; data?: { secret_slug?: string } };
+  type ScalevResponse = {
+    id?: number;
+    secret_slug?: string;
+    data?: { id?: number; secret_slug?: string };
+  };
   const responseText = await response.text();
   let parsed: ScalevResponse | null = null;
   try {
@@ -109,12 +113,52 @@ export async function POST(request: NextRequest) {
   }
 
   const secretSlug = parsed?.secret_slug ?? parsed?.data?.secret_slug;
+  const orderId = parsed?.data?.id ?? parsed?.id;
   if (!secretSlug) {
     return NextResponse.json(
       {
         ok: false,
         error: "Scalev response missing secret_slug",
         details: parsed ?? responseText
+      },
+      { status: 502 }
+    );
+  }
+  if (!orderId) {
+    return NextResponse.json(
+      {
+        ok: false,
+        error: "Scalev response missing order id",
+        details: parsed ?? responseText
+      },
+      { status: 502 }
+    );
+  }
+
+  const paymentResponse = await fetch(
+    `${scalevApiBase.replace(/\/$/, "")}/order/${orderId}/payment`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${scalevApiKey}`,
+        "Content-Type": "application/json"
+      }
+    }
+  );
+  const paymentText = await paymentResponse.text();
+  let paymentParsed: unknown = null;
+  try {
+    paymentParsed = paymentText ? JSON.parse(paymentText) : null;
+  } catch {
+    paymentParsed = paymentText;
+  }
+  if (!paymentResponse.ok) {
+    return NextResponse.json(
+      {
+        ok: false,
+        error: "Scalev payment request failed",
+        status: paymentResponse.status,
+        details: paymentParsed
       },
       { status: 502 }
     );
