@@ -135,16 +135,14 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const paymentResponse = await fetch(
-    `${scalevApiBase.replace(/\/$/, "")}/order/${orderId}/payment`,
-    {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${scalevApiKey}`,
-        "Content-Type": "application/json"
-      }
+  const paymentUrl = `${scalevApiBase.replace(/\/$/, "")}/order/${orderId}/payment`;
+  const paymentResponse = await fetch(paymentUrl, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${scalevApiKey}`,
+      "Content-Type": "application/json"
     }
-  );
+  });
   const paymentText = await paymentResponse.text();
   let paymentParsed: unknown = null;
   try {
