@@ -91,10 +91,12 @@ export async function POST(request: NextRequest) {
   try {
     parsed = responseText ? (JSON.parse(responseText) as ScalevResponse) : null;
   } catch {
+    console.warn("Scalev checkout returned non-JSON response text:", responseText);
     parsed = null;
   }
 
   if (!response.ok) {
+    console.warn("Scalev checkout failed with status:", response.status);
     return NextResponse.json(
       {
         ok: false,
