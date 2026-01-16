@@ -18,6 +18,12 @@ function verifySignature(rawBody: string, signature: string) {
 }
 
 export async function POST(request: NextRequest) {
+  if (!SCALEV_WEBHOOK_SIGNING_SECRET) {
+    return NextResponse.json(
+      { ok: false, message: "Missing Scalev webhook signing secret." },
+      { status: 500 }
+    );
+  }
   const rawBody = await request.text();
   const signature = request.headers.get("x-scalev-hmac-sha256") ?? "";
 
