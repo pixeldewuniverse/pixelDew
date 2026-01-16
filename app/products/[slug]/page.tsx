@@ -1,11 +1,26 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { useParams } from "next/navigation";
 import AppShell from "@/components/AppShell";
 import Footer from "@/components/Footer";
+import { useCart } from "@/components/cart/CartProvider";
 import { products } from "@/lib/products";
 
-type PageProps = { params: { slug: string } };
+export default function ProductDetailPage() {
+  const params = useParams<{ slug: string }>();
+  const slug = typeof params.slug === "string" ? params.slug : params.slug?.[0];
+  const product = products.find((item) => item.slug === slug);
+  const { addItem } = useCart();
+  const [added, setAdded] = useState(false);
 
-export default function ProductDetailPage({ params }: PageProps) {
-  const product = products.find((item) => item.slug === params.slug);
+  const handleAddToCart = () => {
+    if (!product) return;
+    addItem(product);
+    setAdded(true);
+    window.setTimeout(() => setAdded(false), 1400);
+  };
 
   if (!product) {
     return (
@@ -15,8 +30,6 @@ export default function ProductDetailPage({ params }: PageProps) {
       </AppShell>
     );
   }
-
-  const checkoutUrl = (process.env[product.checkoutUrlEnvKey] as string | undefined) ?? "#";
 
   return (
     <AppShell>
@@ -40,12 +53,21 @@ export default function ProductDetailPage({ params }: PageProps) {
             <div className="rounded-xl border border-dew-mint/30 bg-space-800/60 p-6 text-xs text-white/70 shadow-insetPixel">
               <div className="text-white/60">Price</div>
               <div className="mt-2 text-2xl text-dew-mint">{product.price}</div>
-              <a
-                href={checkoutUrl}
-                className="cta-button mt-4 block rounded-md bg-dew-mint px-4 py-2 text-center text-[11px] font-arcade text-space-900"
-              >
-                Buy now
-              </a>
+              <div className="mt-4 flex flex-col gap-2">
+                <button
+                  type="button"
+                  onClick={handleAddToCart}
+                  className="rounded-md border border-neon-cyan/40 px-4 py-2 text-center text-[11px] text-neon-cyan"
+                >
+                  {added ? "Added ✅" : "Add to cart"}
+                </button>
+                <Link
+                  href={`/checkout?product=${product.slug}`}
+                  className="cta-button block rounded-md bg-dew-mint px-4 py-2 text-center text-[11px] font-arcade text-space-900"
+                >
+                  Buy now
+                </Link>
+              </div>
             </div>
             <div className="rounded-xl border border-neon-cyan/30 bg-space-800/60 p-6 text-xs text-white/70 shadow-insetPixel">
               <h3 className="font-arcade text-white">Compatibility</h3>
@@ -69,14 +91,14 @@ export default function ProductDetailPage({ params }: PageProps) {
               .filter((item) => item.slug !== product.slug)
               .slice(0, 3)
               .map((item) => (
-                <a
+                <Link
                   key={item.id}
                   href={`/products/${item.slug}`}
                   className="rounded-xl border border-dew-mint/30 bg-space-800/60 p-4 text-xs text-white/70 shadow-insetPixel"
                 >
                   <div className="font-arcade text-white">{item.name}</div>
                   <div className="mt-2 text-white/60">{item.price}</div>
-                </a>
+                </Link>
               ))}
           </div>
         </div>
