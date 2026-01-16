@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
   if (missingKeys.length > 0) {
     console.warn("Missing Scalev server configuration keys:", missingKeys.join(", "));
     return NextResponse.json(
-      { ok: false, error: "Missing Scalev server configuration", missingKeys },
+      { ok: false, error: "Missing Scalev server configuration", missing: missingKeys },
       { status: 500 }
     );
   }
