@@ -1,0 +1,11 @@
+{
+  "version": "1.0",
+  "apis": [
+    {
+      "identifier": "scalev",
+      "source": "@scalev/v2#30vckch462mir7ep5d",
+      "integrity": "sha512-y9kF8Hg4FBXpF+i6BzvWyIuja7fhPkHMPhWV+qQ+RzygN6AR4IHA5Zjvtk6FJSNdT++LeCOsd6m/WhlVsqxQXQ==",
+      "installerVersion": "6.1.3"
+    }
+  ]
+}
