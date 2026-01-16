@@ -1,0 +1,17 @@
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/debug/scalev/route": "app/api/debug/scalev/route.js",
+  "/api/scalev/checkout/route": "app/api/scalev/checkout/route.js",
+  "/api/webhooks/scalev/route": "app/api/webhooks/scalev/route.js",
+  "/billing/page": "app/billing/page.js",
+  "/cart/page": "app/cart/page.js",
+  "/checkout/page": "app/checkout/page.js",
+  "/page": "app/page.js",
+  "/products/[slug]/page": "app/products/[slug]/page.js",
+  "/products/page": "app/products/page.js",
+  "/projects/[id]/page": "app/projects/[id]/page.js",
+  "/projects/page": "app/projects/page.js",
+  "/studio/[type]/new/page": "app/studio/[type]/new/page.js",
+  "/studio/[type]/preview/page": "app/studio/[type]/preview/page.js",
+  "/studio/page": "app/studio/page.js"
+}

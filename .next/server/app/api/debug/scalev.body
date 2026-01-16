@@ -1,0 +1,1 @@
+{"scalevApiBase":true,"scalevApiKey":false,"scalevStoreUniqueId":false,"scalevPaymentMethod":true,"scalevPublicOrderBase":true,"scalevWebhookSigningSecret":false,"missing":["SCALEV_API_KEY","SCALEV_STORE_UNIQUE_ID"]}
