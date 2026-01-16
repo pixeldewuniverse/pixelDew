@@ -1,8 +1,10 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import AppShell from "@/components/AppShell";
 import Footer from "@/components/Footer";
+import { useCart } from "@/components/cart/CartProvider";
 import { products } from "@/lib/products";
 
 const categories = ["All", "Templates", "Planner", "Prompts", "UI Kit", "Bundle"] as const;
@@ -12,6 +14,8 @@ export default function ProductsPage() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState<(typeof categories)[number]>("All");
   const [sort, setSort] = useState<(typeof sorts)[number]>("Popular");
+  const [addedSlug, setAddedSlug] = useState<string | null>(null);
+  const { addItem } = useCart();
 
   const filtered = useMemo(() => {
     let result = products;
@@ -31,7 +35,13 @@ export default function ProductsPage() {
     return result;
   }, [search, category, sort]);
 
-  const getCheckoutUrl = (envKey: string) => (process.env[envKey] as string | undefined) ?? "#";
+  const handleAddToCart = (slug: string) => {
+    const product = products.find((item) => item.slug === slug);
+    if (!product) return;
+    addItem(product);
+    setAddedSlug(slug);
+    window.setTimeout(() => setAddedSlug((current) => (current === slug ? null : current)), 1400);
+  };
 
   return (
     <AppShell>
@@ -94,12 +104,19 @@ export default function ProductsPage() {
                 >
                   View details
                 </a>
-                <a
-                  href={getCheckoutUrl(product.checkoutUrlEnvKey)}
+                <button
+                  type="button"
+                  onClick={() => handleAddToCart(product.slug)}
+                  className="rounded-md border border-neon-cyan/40 px-3 py-2 text-center text-[11px] text-neon-cyan"
+                >
+                  {addedSlug === product.slug ? "Added ✅" : "Add to cart"}
+                </button>
+                <Link
+                  href={`/checkout?product=${product.slug}`}
                   className="cta-button rounded-md bg-dew-mint px-3 py-2 text-center text-[11px] font-arcade text-space-900"
                 >
                   Buy now
-                </a>
+                </Link>
               </div>
             </div>
           ))}
