@@ -1,7 +1,7 @@
 const commandLines = [
   { type: "line", text: "const cart = createCart('neon-mint');" },
   { type: "line", text: "cart.add('Content Calendar');" },
-  { type: "string", text: "cart.checkout('scalev');" }
+  { type: "string", text: "cart.request('contact');" }
 ];
 
 export default function CommandCenterPanel() {

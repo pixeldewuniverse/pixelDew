@@ -9,7 +9,6 @@ export type Product = {
   description: string;
   badges: string[];
   features: string[];
-  scalevVariantUniqueId: string;
 };
 
 export const products: Product[] = [
@@ -22,7 +21,6 @@ export const products: Product[] = [
     description: "A 12-week pixel planner with channel strategy, drops, and tracking sheets.",
     badges: ["Best Seller"],
     features: ["12-week calendar", "Channel strategy", "Metric tracker"],
-    scalevVariantUniqueId: "variant_calendar"
   },
   {
     id: "prod-flow",
@@ -33,7 +31,6 @@ export const products: Product[] = [
     description: "Visualize launches, tasks, and approvals with a neon-friendly flow canvas.",
     badges: ["New"],
     features: ["Flow canvas", "Approval lanes", "Weekly sprints"],
-    scalevVariantUniqueId: "variant_flow"
   },
   {
     id: "prod-prompt",
@@ -44,7 +41,6 @@ export const products: Product[] = [
     description: "50 high-converting prompts for ads, hooks, and conversion copy.",
     badges: [],
     features: ["50 prompts", "Ad hooks", "Conversion copy"],
-    scalevVariantUniqueId: "variant_prompts"
   },
   {
     id: "prod-ui",
@@ -55,7 +51,6 @@ export const products: Product[] = [
     description: "Neon mint UI components, grids, and buttons for PixelDew-ready layouts.",
     badges: ["Best Seller"],
     features: ["120+ components", "Dark UI", "Figma ready"],
-    scalevVariantUniqueId: "variant_ui"
   },
   {
     id: "bundle-starter",
@@ -66,7 +61,6 @@ export const products: Product[] = [
     description: "Starter bundle with calendar, prompt pack, and launch checklist.",
     badges: ["Bundle"],
     features: ["Calendar + prompts", "Launch checklist", "Commercial license"],
-    scalevVariantUniqueId: "variant_starter_pack"
   },
   {
     id: "bundle-creator",
@@ -76,8 +70,7 @@ export const products: Product[] = [
     price: "299k",
     description: "Everything you need to ship: calendar, prompt pack, and UI kit.",
     badges: ["Bundle"],
-    features: ["Calendar + prompts + UI kit", "Commercial license", "Updates included"],
-    scalevVariantUniqueId: "variant_creator_bundle"
+    features: ["Calendar + prompts + UI kit", "Commercial license", "Updates included"]
   }
 ];
 

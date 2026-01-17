@@ -9,7 +9,6 @@ type CartItem = {
   slug: string;
   name: string;
   price: string;
-  scalevVariantUniqueId: string;
   quantity: number;
 };
 
@@ -69,7 +68,6 @@ export default function CartProvider({ children }: { children: ReactNode }) {
             slug: product.slug,
             name: product.name,
             price: product.price,
-            scalevVariantUniqueId: product.scalevVariantUniqueId,
             quantity: 1
           }
         ];

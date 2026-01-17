@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
 import AppShell from "@/components/AppShell";
 import Footer from "@/components/Footer";
 import { useCart } from "@/components/cart/CartProvider";
@@ -111,12 +110,12 @@ export default function ProductsPage() {
                 >
                   {addedSlug === product.slug ? "Added ✅" : "Add to cart"}
                 </button>
-                <Link
-                  href={`/checkout?product=${product.slug}`}
+                <a
+                  href={`/products/${product.slug}`}
                   className="cta-button rounded-md bg-dew-mint px-3 py-2 text-center text-[11px] font-arcade text-space-900"
                 >
-                  Buy now
-                </Link>
+                  Contact to buy
+                </a>
               </div>
             </div>
           ))}

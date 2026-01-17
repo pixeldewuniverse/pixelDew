@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import "./globals.css";
 import CartProvider from "@/components/cart/CartProvider";
 import FloatingCartButton from "@/components/cart/FloatingCartButton";
-import AdminDebugPanel from "@/components/debug/AdminDebugPanel";
 
 export const metadata: Metadata = {
   title: "PixelDew Universe",
@@ -20,7 +19,6 @@ export default function RootLayout({
         <CartProvider>
           {children}
           <FloatingCartButton />
-          <AdminDebugPanel />
         </CartProvider>
       </body>
     </html>
