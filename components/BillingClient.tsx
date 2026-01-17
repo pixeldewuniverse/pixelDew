@@ -52,14 +52,20 @@ export default function BillingClient({ isProduction }: BillingClientProps) {
   const [error, setError] = useState<string | null>(null);
 
   const snapSrc = isProduction
-    ? "https://app.midtrans.com/snap/v1/transactions"
-    : "https://app.sandbox.midtrans.com/snap/v1/transactions";
+    ? "https://app.midtrans.com/snap/snap.js"
+    : "https://app.sandbox.midtrans.com/snap/snap.js";
 
   const handlePay = async (productId: string) => {
     const product = products.find((item) => item.id === productId);
     if (!product) return;
     setProcessingId(productId);
     setError(null);
+
+    if (!customer.name || !customer.email || !customer.phone) {
+      setProcessingId(null);
+      setError("Please fill in your name, email, and phone before checkout.");
+      return;
+    }
 
     try {
       const response = await fetch("/api/midtrans/snap-token", {
@@ -80,14 +86,15 @@ export default function BillingClient({ isProduction }: BillingClientProps) {
         })
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to create payment token");
-      }
+      const data = (await response.json()) as {
+        ok?: boolean;
+        token?: string;
+        order_id?: string;
+        error?: string;
+      };
 
-      const data = (await response.json()) as { ok: boolean; token: string; order_id: string };
-
-      if (!data.ok) {
-        throw new Error("Failed to start payment.");
+      if (!response.ok || !data.ok || !data.token || !data.order_id) {
+        throw new Error(data.error ?? "Failed to create payment token.");
       }
 
       if (!window.snap) {
