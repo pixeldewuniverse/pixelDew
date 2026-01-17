@@ -35,10 +35,10 @@ export default function TopNav({ onMenuToggle }: { onMenuToggle: () => void }) {
           Plans
         </button>
         <a
-          href="/checkout"
+          href="mailto:hello@pixeldew.xyz"
           className="cta-button rounded-md bg-dew-mint px-4 py-2 text-[11px] font-arcade text-space-900 shadow-glow md:text-xs"
         >
-          Checkout
+          Contact
         </a>
       </div>
     </nav>

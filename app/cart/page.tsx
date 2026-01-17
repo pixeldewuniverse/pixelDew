@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import AppShell from "@/components/AppShell";
 import Footer from "@/components/Footer";
 import { useCart } from "@/components/cart/CartProvider";
@@ -14,7 +13,7 @@ export default function CartPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="font-arcade text-lg text-white">Cart</h1>
-            <p className="mt-2 text-xs text-white/60">Review your PixelDew drops before checkout.</p>
+            <p className="mt-2 text-xs text-white/60">Review your PixelDew drops before contacting us.</p>
           </div>
           {count > 0 && (
             <button
@@ -69,12 +68,12 @@ export default function CartPage() {
           )}
         </div>
         {count > 0 && (
-          <Link
-            href="/checkout"
+          <a
+            href="mailto:hello@pixeldew.xyz?subject=PixelDew%20Purchase%20Inquiry"
             className="cta-button mt-6 inline-flex rounded-md bg-dew-mint px-4 py-2 text-[11px] font-arcade text-space-900"
           >
-            Checkout
-          </Link>
+            Contact to buy
+          </a>
         )}
       </div>
       <Footer />

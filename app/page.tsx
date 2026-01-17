@@ -64,8 +64,8 @@ const faqs = [
     answer: "Untuk file digital, refund tidak tersedia. Tapi kami bantu kalau ada issue akses."
   },
   {
-    question: "Checkout pakai apa?",
-    answer: "Checkout menggunakan Scalev dengan opsi invoice."
+    question: "Cara pembelian?",
+    answer: "Hubungi kami untuk memesan, lalu tim akan bantu proses pembelian."
   },
   {
     question: "Bisa request custom?",
@@ -159,10 +159,10 @@ export default function HomePage() {
                     {addedSlug === product.slug ? "Added ✅" : "Add to cart"}
                   </button>
                   <Link
-                    href={`/checkout?product=${product.slug}`}
+                    href={`/products/${product.slug}`}
                     className="cta-button rounded-md bg-dew-mint px-3 py-2 text-center text-[11px] font-arcade text-space-900"
                   >
-                    Buy now
+                    Contact to buy
                   </Link>
                 </div>
               </div>
@@ -189,10 +189,10 @@ export default function HomePage() {
                 ))}
               </ul>
               <Link
-                href={`/checkout?product=${bundle.slug}`}
+                href={`/products/${bundle.slug}`}
                 className="cta-button mt-4 inline-block rounded-md bg-dew-mint px-4 py-2 text-[11px] font-arcade text-space-900"
               >
-                Get Bundle
+                Contact to buy
               </Link>
             </div>
           ))}

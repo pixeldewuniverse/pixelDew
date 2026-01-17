@@ -61,12 +61,14 @@ export default function ProductDetailPage() {
                 >
                   {added ? "Added ✅" : "Add to cart"}
                 </button>
-                <Link
-                  href={`/checkout?product=${product.slug}`}
+                <a
+                  href={`mailto:hello@pixeldew.xyz?subject=PixelDew%20Purchase%20-%20${encodeURIComponent(
+                    product.name
+                  )}`}
                   className="cta-button block rounded-md bg-dew-mint px-4 py-2 text-center text-[11px] font-arcade text-space-900"
                 >
-                  Buy now
-                </Link>
+                  Contact to buy
+                </a>
               </div>
             </div>
             <div className="rounded-xl border border-neon-cyan/30 bg-space-800/60 p-6 text-xs text-white/70 shadow-insetPixel">
