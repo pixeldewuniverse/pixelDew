@@ -111,10 +111,10 @@ export default function ProductsPage() {
                   {addedSlug === product.slug ? "Added ✅" : "Add to cart"}
                 </button>
                 <a
-                  href={`/products/${product.slug}`}
+                  href="/billing"
                   className="cta-button rounded-md bg-dew-mint px-3 py-2 text-center text-[11px] font-arcade text-space-900"
                 >
-                  Contact to buy
+                  Buy now
                 </a>
               </div>
             </div>

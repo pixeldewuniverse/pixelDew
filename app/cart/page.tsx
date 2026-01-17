@@ -13,7 +13,7 @@ export default function CartPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="font-arcade text-lg text-white">Cart</h1>
-            <p className="mt-2 text-xs text-white/60">Review your PixelDew drops before contacting us.</p>
+            <p className="mt-2 text-xs text-white/60">Review your PixelDew drops before checkout.</p>
           </div>
           {count > 0 && (
             <button
@@ -69,10 +69,10 @@ export default function CartPage() {
         </div>
         {count > 0 && (
           <a
-            href="mailto:hello@pixeldew.xyz?subject=PixelDew%20Purchase%20Inquiry"
+            href="/billing"
             className="cta-button mt-6 inline-flex rounded-md bg-dew-mint px-4 py-2 text-[11px] font-arcade text-space-900"
           >
-            Contact to buy
+            Proceed to checkout
           </a>
         )}
       </div>
