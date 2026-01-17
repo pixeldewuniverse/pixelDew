@@ -52,8 +52,8 @@ export default function BillingClient({ isProduction }: BillingClientProps) {
   const [error, setError] = useState<string | null>(null);
 
   const snapSrc = isProduction
-    ? "https://app.midtrans.com/snap/snap.js"
-    : "https://app.sandbox.midtrans.com/snap/snap.js";
+    ? "https://app.midtrans.com/snap/v1/transactions"
+    : "https://app.sandbox.midtrans.com/snap/v1/transactions";
 
   const handlePay = async (productId: string) => {
     const product = products.find((item) => item.id === productId);
