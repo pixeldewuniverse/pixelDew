@@ -1,16 +1,17 @@
 import Link from "next/link";
 import AppShell from "@/components/AppShell";
 import Footer from "@/components/Footer";
+import PaymentStatusPanel from "@/components/PaymentStatusPanel";
 
 export default function PaymentFinishPage() {
   return (
     <AppShell>
       <div className="mx-auto max-w-2xl text-center text-xs text-white/70">
-        <h1 className="font-arcade text-xl text-dew-mint">Payment Complete</h1>
-        <p className="mt-3">
-          Thanks for your purchase! Your PixelDew download is being prepared, and we&apos;ll reach out with
-          access details shortly.
-        </p>
+        <PaymentStatusPanel
+          accentClassName="text-dew-mint"
+          title="Payment Complete"
+          description="Thanks for your purchase! Your PixelDew download is being prepared."
+        />
         <div className="mt-6 flex flex-col items-center gap-3">
           <Link
             href="/billing"

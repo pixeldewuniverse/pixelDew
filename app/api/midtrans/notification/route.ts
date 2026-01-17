@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createHash } from "crypto";
-import { orderStore } from "@/lib/orderStore";
+import { orderStore, type OrderStatus } from "@/lib/orderStore";
 
 type MidtransNotification = {
   order_id: string;
@@ -30,14 +30,26 @@ export async function POST(request: Request) {
   }
 
   const status = payload.transaction_status;
-  const isSettled = status === "settlement" || status === "capture";
-  const isFailed = ["cancel", "deny", "expire"].includes(status);
+  let nextStatus: OrderStatus | null = null;
 
-  if (isSettled) {
-    orderStore.markPaid(payload.order_id);
-  } else if (isFailed) {
-    orderStore.markFailed(payload.order_id);
+  if (status === "settlement" || status === "capture") {
+    nextStatus = "PAID";
+  } else if (status === "pending") {
+    nextStatus = "PENDING";
+  } else if (["deny", "cancel", "expire", "failure"].includes(status)) {
+    nextStatus = "FAILED";
   }
 
-  return NextResponse.json({ received: true });
+  if (nextStatus) {
+    const order = orderStore.get(payload.order_id);
+    if (order) {
+      orderStore.set(payload.order_id, {
+        ...order,
+        status: nextStatus,
+        updatedAt: Date.now()
+      });
+    }
+  }
+
+  return NextResponse.json({ ok: true });
 }

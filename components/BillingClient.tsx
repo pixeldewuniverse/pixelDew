@@ -84,16 +84,20 @@ export default function BillingClient({ isProduction }: BillingClientProps) {
         throw new Error("Failed to create payment token");
       }
 
-      const data = (await response.json()) as { token: string; order_id: string };
+      const data = (await response.json()) as { ok: boolean; token: string; order_id: string };
+
+      if (!data.ok) {
+        throw new Error("Failed to start payment.");
+      }
 
       if (!window.snap) {
         throw new Error("Payment gateway is not ready yet.");
       }
 
       window.snap.pay(data.token, {
-        onSuccess: () => router.push("/payment/finish"),
-        onPending: () => router.push("/payment/unfinish"),
-        onError: () => router.push("/payment/error"),
+        onSuccess: () => router.push(`/payment/finish?order_id=${data.order_id}`),
+        onPending: () => router.push(`/payment/unfinish?order_id=${data.order_id}`),
+        onError: () => router.push(`/payment/error?order_id=${data.order_id}`),
         onClose: () => setProcessingId(null)
       });
     } catch (err) {

@@ -1,15 +1,17 @@
 import Link from "next/link";
 import AppShell from "@/components/AppShell";
 import Footer from "@/components/Footer";
+import PaymentStatusPanel from "@/components/PaymentStatusPanel";
 
 export default function PaymentErrorPage() {
   return (
     <AppShell>
       <div className="mx-auto max-w-2xl text-center text-xs text-white/70">
-        <h1 className="font-arcade text-xl text-purple-300">Payment Error</h1>
-        <p className="mt-3">
-          Something went wrong while processing the payment. Please try again or reach out for help.
-        </p>
+        <PaymentStatusPanel
+          accentClassName="text-purple-300"
+          title="Payment Error"
+          description="Something went wrong while processing the payment. Please try again or reach out for help."
+        />
         <div className="mt-6 flex flex-col items-center gap-3">
           <Link
             href="/billing"

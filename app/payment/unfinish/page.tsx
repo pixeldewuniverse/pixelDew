@@ -1,16 +1,17 @@
 import Link from "next/link";
 import AppShell from "@/components/AppShell";
 import Footer from "@/components/Footer";
+import PaymentStatusPanel from "@/components/PaymentStatusPanel";
 
 export default function PaymentUnfinishPage() {
   return (
     <AppShell>
       <div className="mx-auto max-w-2xl text-center text-xs text-white/70">
-        <h1 className="font-arcade text-xl text-neon-cyan">Payment Pending</h1>
-        <p className="mt-3">
-          Your payment is still processing. You can complete it anytime from the Midtrans popup or try
-          again below.
-        </p>
+        <PaymentStatusPanel
+          accentClassName="text-neon-cyan"
+          title="Payment Pending"
+          description="Your payment is still processing. You can complete it anytime from the Midtrans popup."
+        />
         <div className="mt-6 flex flex-col items-center gap-3">
           <Link
             href="/billing"

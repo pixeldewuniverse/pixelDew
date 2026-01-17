@@ -1,11 +1,19 @@
 import { NextResponse } from "next/server";
-import { randomUUID } from "crypto";
 import Midtrans from "midtrans-client";
-import { orderStore, type CustomerInfo, type OrderItem } from "@/lib/orderStore";
+import { orderStore, type Order } from "@/lib/orderStore";
 
 type SnapRequestBody = {
-  items: OrderItem[];
-  customer: CustomerInfo;
+  items: Array<{
+    id: string;
+    name: string;
+    price: number;
+    qty: number;
+  }>;
+  customer: {
+    name: string;
+    email: string;
+    phone: string;
+  };
 };
 
 const getSnapClient = () => {
@@ -22,17 +30,31 @@ const getSnapClient = () => {
   });
 };
 
-const calculateGrossAmount = (items: OrderItem[]) =>
+const calculateGrossAmount = (items: SnapRequestBody["items"]) =>
   items.reduce((total, item) => total + item.price * item.qty, 0);
+
+const isValidItem = (item: SnapRequestBody["items"][number]) =>
+  typeof item.id === "string" &&
+  typeof item.name === "string" &&
+  Number.isFinite(item.price) &&
+  Number.isFinite(item.qty) &&
+  item.price > 0 &&
+  item.qty > 0;
 
 export async function POST(request: Request) {
   const body = (await request.json()) as SnapRequestBody;
 
-  if (!body?.items?.length) {
-    return NextResponse.json({ error: "Items are required" }, { status: 400 });
+  const hasValidCustomer =
+    body?.customer &&
+    typeof body.customer.name === "string" &&
+    typeof body.customer.email === "string" &&
+    typeof body.customer.phone === "string";
+
+  if (!body?.items?.length || !body.items.every(isValidItem) || !hasValidCustomer) {
+    return NextResponse.json({ error: "Invalid request payload" }, { status: 400 });
   }
 
-  const orderId = `${randomUUID()}-${Date.now()}`;
+  const orderId = `PD-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
   const grossAmount = calculateGrossAmount(body.items);
 
   if (!Number.isFinite(grossAmount) || grossAmount <= 0) {
@@ -59,16 +81,17 @@ export async function POST(request: Request) {
     }
   });
 
-  orderStore.create({
-    orderId,
+  const now = Date.now();
+  const order: Order = {
+    order_id: orderId,
+    gross_amount: grossAmount,
     items: body.items,
-    customer: body.customer ?? {
-      name: "PixelDew Customer",
-      email: "",
-      phone: ""
-    },
-    grossAmount
-  });
+    customer: body.customer,
+    status: "PENDING",
+    createdAt: now,
+    updatedAt: now
+  };
+  orderStore.set(orderId, order);
 
-  return NextResponse.json({ token: transaction.token, order_id: orderId });
+  return NextResponse.json({ ok: true, token: transaction.token, order_id: orderId });
 }
