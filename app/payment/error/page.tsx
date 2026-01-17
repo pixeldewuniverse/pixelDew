@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import AppShell from "@/components/AppShell";
 import Footer from "@/components/Footer";
 import PaymentStatusPanel from "@/components/PaymentStatusPanel";
@@ -7,11 +8,13 @@ export default function PaymentErrorPage() {
   return (
     <AppShell>
       <div className="mx-auto max-w-2xl text-center text-xs text-white/70">
-        <PaymentStatusPanel
-          accentClassName="text-purple-300"
-          title="Payment Error"
-          description="Something went wrong while processing the payment. Please try again or reach out for help."
-        />
+        <Suspense fallback={<div className="text-[11px] text-white/60">Loading payment status...</div>}>
+          <PaymentStatusPanel
+            accentClassName="text-purple-300"
+            title="Payment Error"
+            description="Something went wrong while processing the payment. Please try again or reach out for help."
+          />
+        </Suspense>
         <div className="mt-6 flex flex-col items-center gap-3">
           <Link
             href="/billing"
