@@ -3,6 +3,7 @@
 const menuItems = [
   { label: "Home", href: "/" },
   { label: "Products", href: "/products" },
+  { label: "Billing", href: "/billing" },
   { label: "Contact", href: "mailto:hello@pixeldew.xyz" },
   { label: "Studio", href: "/studio" }
 ];
