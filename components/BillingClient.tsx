@@ -86,15 +86,22 @@ export default function BillingClient({ isProduction }: BillingClientProps) {
         })
       });
 
-      const data = (await response.json()) as {
-        ok?: boolean;
-        token?: string;
-        order_id?: string;
-        error?: string;
-      };
+      const contentType = response.headers.get("content-type") ?? "";
+      const data = contentType.includes("application/json")
+        ? ((await response.json()) as {
+            ok?: boolean;
+            token?: string;
+            order_id?: string;
+            error?: string;
+          })
+        : {};
 
-      if (!response.ok || !data.ok || !data.token || !data.order_id) {
-        throw new Error(data.error ?? "Failed to create payment token.");
+      if (!response.ok || !("ok" in data) || !data.ok || !data.token || !data.order_id) {
+        throw new Error(
+          "error" in data && data.error
+            ? data.error
+            : `Failed to create payment token. (HTTP ${response.status})`
+        );
       }
 
       if (!window.snap) {
