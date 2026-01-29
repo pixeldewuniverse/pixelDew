@@ -86,15 +86,14 @@ export default function BillingClient({ isProduction }: BillingClientProps) {
         })
       });
 
-      const contentType = response.headers.get("content-type") ?? "";
-      const data = contentType.includes("application/json")
-        ? ((await response.json()) as {
-            ok?: boolean;
-            token?: string;
-            order_id?: string;
-            error?: string;
-          })
-        : {};
+      const rawBody = await response.text();
+      let data: { ok?: boolean; token?: string; order_id?: string; error?: string; details?: unknown } = {};
+
+      try {
+        data = rawBody ? (JSON.parse(rawBody) as typeof data) : {};
+      } catch {
+        data = {};
+      }
 
       if (!response.ok || !("ok" in data) || !data.ok || !data.token || !data.order_id) {
         throw new Error(

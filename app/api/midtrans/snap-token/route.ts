@@ -16,19 +16,16 @@ type SnapRequestBody = {
   };
 };
 
-const getSnapClient = () => {
-  const serverKey = process.env.MIDTRANS_SERVER_KEY;
-  const clientKey = process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY;
-  if (!serverKey) {
-    throw new Error("MIDTRANS_SERVER_KEY is not set");
-  }
-
-  return new Midtrans.Snap({
-    isProduction: process.env.MIDTRANS_IS_PRODUCTION === "true",
-    serverKey,
-    clientKey
+const getSnapClient = (options: {
+  serverKey: string;
+  clientKey: string;
+  isProduction: boolean;
+}) =>
+  new Midtrans.Snap({
+    isProduction: options.isProduction,
+    serverKey: options.serverKey,
+    clientKey: options.clientKey
   });
-};
 
 const calculateGrossAmount = (items: SnapRequestBody["items"]) =>
   items.reduce((total, item) => total + item.price * item.qty, 0);
@@ -42,29 +39,65 @@ const isValidItem = (item: SnapRequestBody["items"][number]) =>
   item.qty > 0;
 
 export async function POST(request: Request) {
+  const serverKey = process.env.MIDTRANS_SERVER_KEY;
+  const clientKey = process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY;
+  const isProduction = process.env.MIDTRANS_IS_PRODUCTION === "true";
+  const missingKeys = [
+    !serverKey ? "MIDTRANS_SERVER_KEY" : null,
+    !clientKey ? "NEXT_PUBLIC_MIDTRANS_CLIENT_KEY" : null,
+    !process.env.MIDTRANS_IS_PRODUCTION ? "MIDTRANS_IS_PRODUCTION" : null
+  ].filter(Boolean);
+
+  if (missingKeys.length > 0) {
+    return NextResponse.json(
+      {
+        ok: false,
+        error: "Missing Midtrans environment variables.",
+        details: { missingKeys }
+      },
+      { status: 500 }
+    );
+  }
+
+  const isSandboxKey = serverKey.startsWith("SB-");
+  if ((isSandboxKey && isProduction) || (!isSandboxKey && !isProduction)) {
+    return NextResponse.json(
+      {
+        ok: false,
+        error: "Midtrans env mismatch",
+        details: {
+          isProd: isProduction,
+          serverKeyPrefix: serverKey.slice(0, 12)
+        }
+      },
+      { status: 500 }
+    );
+  }
+
+  const body = (await request.json()) as SnapRequestBody;
+
+  const hasValidCustomer =
+    body?.customer &&
+    typeof body.customer.name === "string" &&
+    typeof body.customer.email === "string" &&
+    typeof body.customer.phone === "string";
+
+  if (!body?.items?.length || !body.items.every(isValidItem) || !hasValidCustomer) {
+    return NextResponse.json({ error: "Invalid request payload" }, { status: 400 });
+  }
+
+  const orderId = `PD-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  const grossAmount = calculateGrossAmount(body.items);
+
+  if (!Number.isFinite(grossAmount) || grossAmount <= 0) {
+    return NextResponse.json({ error: "Invalid gross amount" }, { status: 400 });
+  }
+
+  const snap = getSnapClient({ serverKey, clientKey, isProduction });
+
+  let transaction: { token: string };
   try {
-    const body = (await request.json()) as SnapRequestBody;
-
-    const hasValidCustomer =
-      body?.customer &&
-      typeof body.customer.name === "string" &&
-      typeof body.customer.email === "string" &&
-      typeof body.customer.phone === "string";
-
-    if (!body?.items?.length || !body.items.every(isValidItem) || !hasValidCustomer) {
-      return NextResponse.json({ error: "Invalid request payload" }, { status: 400 });
-    }
-
-    const orderId = `PD-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-    const grossAmount = calculateGrossAmount(body.items);
-
-    if (!Number.isFinite(grossAmount) || grossAmount <= 0) {
-      return NextResponse.json({ error: "Invalid gross amount" }, { status: 400 });
-    }
-
-    const snap = getSnapClient();
-
-    const transaction = await snap.createTransaction({
+    transaction = await snap.createTransaction({
       transaction_details: {
         order_id: orderId,
         gross_amount: grossAmount
@@ -81,24 +114,38 @@ export async function POST(request: Request) {
         phone: body.customer?.phone ?? ""
       }
     });
-
-    const now = Date.now();
-    const order: Order = {
-      order_id: orderId,
-      gross_amount: grossAmount,
-      items: body.items,
-      customer: body.customer,
-      status: "PENDING",
-      createdAt: now,
-      updatedAt: now
-    };
-    orderStore.set(orderId, order);
-
-    return NextResponse.json({ ok: true, token: transaction.token, order_id: orderId });
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Unable to create payment token";
-    console.error("Midtrans snap token error:", error);
-    return NextResponse.json({ error: message }, { status: 500 });
+    const message = error instanceof Error ? error.message : "Midtrans request failed.";
+    const errorWithMeta = error as {
+      statusCode?: number;
+      ApiResponse?: unknown;
+      response?: unknown;
+    };
+    return NextResponse.json(
+      {
+        ok: false,
+        error: "Failed to create Midtrans transaction.",
+        details: {
+          message,
+          statusCode: errorWithMeta.statusCode ?? null,
+          response: errorWithMeta.ApiResponse ?? errorWithMeta.response ?? null
+        }
+      },
+      { status: 502 }
+    );
   }
+
+  const now = Date.now();
+  const order: Order = {
+    order_id: orderId,
+    gross_amount: grossAmount,
+    items: body.items,
+    customer: body.customer,
+    status: "PENDING",
+    createdAt: now,
+    updatedAt: now
+  };
+  orderStore.set(orderId, order);
+
+  return NextResponse.json({ ok: true, token: transaction.token, order_id: orderId });
 }
