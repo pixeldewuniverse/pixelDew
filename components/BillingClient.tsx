@@ -96,10 +96,12 @@ export default function BillingClient({ isProduction }: BillingClientProps) {
       }
 
       if (!response.ok || !("ok" in data) || !data.ok || !data.token || !data.order_id) {
+        const detailText =
+          "details" in data && data.details ? ` Details: ${JSON.stringify(data.details)}` : "";
         throw new Error(
           "error" in data && data.error
-            ? data.error
-            : `Failed to create payment token. (HTTP ${response.status})`
+            ? `${data.error}${detailText}`
+            : `Failed to create payment token. (HTTP ${response.status})${detailText}`
         );
       }
 

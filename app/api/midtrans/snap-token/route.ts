@@ -70,6 +70,7 @@ export async function POST(request: Request) {
         error: "Midtrans env mismatch",
         details: {
           isProd: isProduction,
+          isProductionValue: process.env.MIDTRANS_IS_PRODUCTION ?? "",
           serverKeyPrefix: safeServerKey.slice(0, 12)
         }
       },
