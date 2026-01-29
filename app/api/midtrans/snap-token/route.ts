@@ -42,24 +42,27 @@ export async function POST(request: Request) {
   const serverKey = process.env.MIDTRANS_SERVER_KEY;
   const clientKey = process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY;
   const isProduction = process.env.MIDTRANS_IS_PRODUCTION === "true";
-  const missingKeys = [
+  const missing = [
     !serverKey ? "MIDTRANS_SERVER_KEY" : null,
     !clientKey ? "NEXT_PUBLIC_MIDTRANS_CLIENT_KEY" : null,
     !process.env.MIDTRANS_IS_PRODUCTION ? "MIDTRANS_IS_PRODUCTION" : null
   ].filter(Boolean);
 
-  if (missingKeys.length > 0) {
+  if (missing.length > 0) {
     return NextResponse.json(
       {
         ok: false,
-        error: "Missing Midtrans environment variables.",
-        details: { missingKeys }
+        error: "Missing Midtrans configuration",
+        missing
       },
       { status: 500 }
     );
   }
 
-  const isSandboxKey = serverKey.startsWith("SB-");
+  const safeServerKey = serverKey ?? "";
+  const safeClientKey = clientKey ?? "";
+
+  const isSandboxKey = safeServerKey.startsWith("SB-");
   if ((isSandboxKey && isProduction) || (!isSandboxKey && !isProduction)) {
     return NextResponse.json(
       {
@@ -67,7 +70,7 @@ export async function POST(request: Request) {
         error: "Midtrans env mismatch",
         details: {
           isProd: isProduction,
-          serverKeyPrefix: serverKey.slice(0, 12)
+          serverKeyPrefix: safeServerKey.slice(0, 12)
         }
       },
       { status: 500 }
@@ -93,7 +96,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid gross amount" }, { status: 400 });
   }
 
-  const snap = getSnapClient({ serverKey, clientKey, isProduction });
+  const snap = getSnapClient({ serverKey: safeServerKey, clientKey: safeClientKey, isProduction });
 
   let transaction: { token: string };
   try {
