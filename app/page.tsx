@@ -159,10 +159,10 @@ export default function HomePage() {
                     {addedSlug === product.slug ? "Added ✅" : "Add to cart"}
                   </button>
                   <Link
-                    href={`/products/${product.slug}`}
+                    href="/billing"
                     className="cta-button rounded-md bg-dew-mint px-3 py-2 text-center text-[11px] font-arcade text-space-900"
                   >
-                    Contact to buy
+                    Buy now
                   </Link>
                 </div>
               </div>
@@ -189,10 +189,10 @@ export default function HomePage() {
                 ))}
               </ul>
               <Link
-                href={`/products/${bundle.slug}`}
+                href="/billing"
                 className="cta-button mt-4 inline-block rounded-md bg-dew-mint px-4 py-2 text-[11px] font-arcade text-space-900"
               >
-                Contact to buy
+                Buy now
               </Link>
             </div>
           ))}
