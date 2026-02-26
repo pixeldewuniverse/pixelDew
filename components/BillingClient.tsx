@@ -13,19 +13,15 @@ declare global {
       pay: (
         token: string,
         callbacks: {
-          onSuccess?: () => void;
-          onPending?: () => void;
-          onError?: () => void;
+          onSuccess?: (result?: { order_id?: string }) => void;
+          onPending?: (result?: { order_id?: string }) => void;
+          onError?: (result?: { order_id?: string }) => void;
           onClose?: () => void;
         }
       ) => void;
     };
   }
 }
-
-type BillingClientProps = {
-  isProduction: boolean;
-};
 
 type CustomerForm = {
   name: string;
@@ -41,7 +37,7 @@ const parsePrice = (price: string) => {
   return numeric;
 };
 
-export default function BillingClient({ isProduction }: BillingClientProps) {
+export default function BillingClient() {
   const router = useRouter();
   const [customer, setCustomer] = useState<CustomerForm>({
     name: "",
@@ -50,10 +46,6 @@ export default function BillingClient({ isProduction }: BillingClientProps) {
   });
   const [processingId, setProcessingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-
-  const snapSrc = isProduction
-    ? "https://app.midtrans.com/snap/snap.js"
-    : "https://app.sandbox.midtrans.com/snap/snap.js";
 
   const handlePay = async (productId: string) => {
     const product = products.find((item) => item.id === productId);
@@ -67,6 +59,8 @@ export default function BillingClient({ isProduction }: BillingClientProps) {
       return;
     }
 
+    const orderId = `PD-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+
     try {
       const response = await fetch("/api/midtrans/snap-token", {
         method: "POST",
@@ -74,20 +68,21 @@ export default function BillingClient({ isProduction }: BillingClientProps) {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
+          orderId,
+          amount: parsePrice(product.price),
           items: [
             {
               id: product.id,
               name: product.name,
               price: parsePrice(product.price),
-              qty: 1
+              quantity: 1
             }
-          ],
-          customer
+          ]
         })
       });
 
       const rawBody = await response.text();
-      let data: { ok?: boolean; token?: string; order_id?: string; error?: string; details?: unknown } = {};
+      let data: { token?: string; error?: string; details?: unknown } = {};
 
       try {
         data = rawBody ? (JSON.parse(rawBody) as typeof data) : {};
@@ -95,28 +90,32 @@ export default function BillingClient({ isProduction }: BillingClientProps) {
         data = {};
       }
 
-      if (!response.ok || !("ok" in data) || !data.ok || !data.token || !data.order_id) {
-        const detailText =
-          "details" in data && data.details ? ` Details: ${JSON.stringify(data.details)}` : "";
+      if (!response.ok || !data.token) {
+        const detailText = data.details ? ` Details: ${JSON.stringify(data.details)}` : "";
         throw new Error(
-          "error" in data && data.error
+          data.error
             ? `${data.error}${detailText}`
             : `Failed to create payment token. (HTTP ${response.status})${detailText}`
         );
       }
 
       if (!window.snap) {
-        throw new Error("Payment gateway is not ready yet.");
+        throw new Error("Payment gateway is not ready yet. Please refresh and try again.");
       }
 
       window.snap.pay(data.token, {
-        onSuccess: () => router.push(`/payment/finish?order_id=${data.order_id}`),
-        onPending: () => router.push(`/payment/unfinish?order_id=${data.order_id}`),
-        onError: () => router.push(`/payment/error?order_id=${data.order_id}`),
+        onSuccess: (result) => router.push(`/payment/finish?order_id=${result?.order_id ?? orderId}`),
+        onPending: (result) =>
+          router.push(`/payment/unfinish?order_id=${result?.order_id ?? orderId}`),
+        onError: (result) => router.push(`/payment/error?order_id=${result?.order_id ?? orderId}`),
         onClose: () => setProcessingId(null)
       });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong.");
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Unable to start payment right now. Please try again in a moment."
+      );
     } finally {
       setProcessingId(null);
     }
@@ -125,7 +124,7 @@ export default function BillingClient({ isProduction }: BillingClientProps) {
   return (
     <AppShell>
       <Script
-        src={snapSrc}
+        src="https://app.midtrans.com/snap/snap.js"
         data-client-key={process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY}
         strategy="afterInteractive"
       />
