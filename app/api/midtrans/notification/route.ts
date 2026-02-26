@@ -1,44 +1,42 @@
 import { NextResponse } from "next/server";
-import { createHash } from "crypto";
-import { orderStore, type OrderStatus } from "@/lib/orderStore";
+import crypto from "crypto";
 
-type MidtransNotification = {
-  order_id: string;
-  status_code: string;
-  gross_amount: string;
-  signature_key: string;
-  transaction_status: string;
-  fraud_status?: string;
-};
+export async function POST(req: Request) {
+  try {
+    const body = await req.json();
 
-const verifySignature = (payload: MidtransNotification, serverKey: string) => {
-  const rawSignature = `${payload.order_id}${payload.status_code}${payload.gross_amount}${serverKey}`;
-  const expected = createHash("sha512").update(rawSignature).digest("hex");
-  return expected === payload.signature_key;
-};
+    const serverKey = process.env.MIDTRANS_SERVER_KEY;
+    if (!serverKey) {
+      return NextResponse.json(
+        { error: "Server key not configured" },
+        { status: 500 }
+      );
+    }
 
-export async function POST(request: Request) {
-  const serverKey = process.env.MIDTRANS_SERVER_KEY;
-  if (!serverKey) {
-    return NextResponse.json({ error: "Server key not configured" }, { status: 500 });
-  }
+    // Validate signature
+    const hash = crypto
+      .createHash("sha512")
+      .update(
+        body.order_id +
+          body.status_code +
+          body.gross_amount +
+          serverKey
+      )
+      .digest("hex");
 
-  const payload = (await request.json()) as MidtransNotification;
+    if (hash !== body.signature_key) {
+      return NextResponse.json(
+        { error: "Invalid signature" },
+        { status: 403 }
+      );
+    }
 
-  if (!verifySignature(payload, serverKey)) {
-    return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
-  }
+    const transactionStatus = body.transaction_status;
+    const orderId = body.order_id;
 
-  const status = payload.transaction_status;
-  let nextStatus: OrderStatus | null = null;
+    console.log("Midtrans Webhook:", orderId, transactionStatus);
 
-  if (status === "settlement" || status === "capture") {
-    nextStatus = "PAID";
-  } else if (status === "pending") {
-    nextStatus = "PENDING";
-  } else if (["deny", "cancel", "expire", "failure"].includes(status)) {
-    nextStatus = "FAILED";
-  }
+    // TODO: Update order status in database here
 
   if (nextStatus) {
     const now = Date.now();
@@ -53,6 +51,4 @@ export async function POST(request: Request) {
       ...(existing ?? {})
     });
   }
-
-  return NextResponse.json({ ok: true });
 }
