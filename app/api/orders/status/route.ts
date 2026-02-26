@@ -11,8 +11,14 @@ export async function GET(request: Request) {
 
   const order = orderStore.get(orderId);
   if (!order) {
-    return NextResponse.json({ ok: false, error: "Not found" }, { status: 404 });
+    return NextResponse.json({ ok: false, error: "Order not found" }, { status: 404 });
   }
 
-  return NextResponse.json({ ok: true, order });
+  return NextResponse.json({
+    ok: true,
+    order: {
+      order_id: order.order_id,
+      status: order.status
+    }
+  });
 }

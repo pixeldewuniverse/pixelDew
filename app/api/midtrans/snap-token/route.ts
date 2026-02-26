@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import Midtrans from "midtrans-client";
+import { orderStore } from "@/lib/orderStore";
 
 type SnapRequestBody = {
   orderId: string;
@@ -72,6 +73,16 @@ export async function POST(request: Request) {
         { status: 502 }
       );
     }
+
+    const now = Date.now();
+    orderStore.set(body.orderId, {
+      order_id: body.orderId,
+      status: "PENDING",
+      gross_amount: body.amount,
+      items: body.items,
+      createdAt: now,
+      updatedAt: now
+    });
 
     return NextResponse.json({ token: transaction.token });
   } catch (error) {

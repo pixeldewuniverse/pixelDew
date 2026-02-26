@@ -38,11 +38,17 @@ export async function POST(req: Request) {
 
     // TODO: Update order status in database here
 
-    return NextResponse.json({ ok: true });
-  } catch (error: any) {
-    return NextResponse.json(
-      { error: error.message },
-      { status: 500 }
-    );
+  if (nextStatus) {
+    const now = Date.now();
+    const existing = orderStore.get(payload.order_id);
+
+    orderStore.set(payload.order_id, {
+      order_id: payload.order_id,
+      status: nextStatus,
+      gross_amount: Number(payload.gross_amount),
+      createdAt: existing?.createdAt ?? now,
+      updatedAt: now,
+      ...(existing ?? {})
+    });
   }
 }
