@@ -41,14 +41,17 @@ export async function POST(request: Request) {
   }
 
   if (nextStatus) {
-    const order = orderStore.get(payload.order_id);
-    if (order) {
-      orderStore.set(payload.order_id, {
-        ...order,
-        status: nextStatus,
-        updatedAt: Date.now()
-      });
-    }
+    const now = Date.now();
+    const existing = orderStore.get(payload.order_id);
+
+    orderStore.set(payload.order_id, {
+      order_id: payload.order_id,
+      status: nextStatus,
+      gross_amount: Number(payload.gross_amount),
+      createdAt: existing?.createdAt ?? now,
+      updatedAt: now,
+      ...(existing ?? {})
+    });
   }
 
   return NextResponse.json({ ok: true });
